@@ -22,7 +22,7 @@
 
 package edu.uwm.ai.search;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import processing.core.PApplet;
@@ -38,15 +38,22 @@ public class Search extends PApplet
 	public static final int displayWidth = 720;
 	public static final int displayHeight = 480;
 
-	World w = new World(this, 48, 32);
-	PlayerEntity player = new PlayerEntity(this, w, new Point(5, 5), color(0, 0, 0));
+	private World world;
+	private PlayerEntity player;
 
-	List<SearchEntity> entities = Arrays.asList(new SearchEntity[] { new SearchEntity(this, w, new Point(1, 1), color(255, 255, 25), player, new AStarSearch(w)), new SearchEntity(this, w, new Point(4, 1), color(25, 255, 255), player, new IterativeDeepening(w)), new SearchEntity(this, w, new Point(3, 3), color(255, 25, 255), player, new DStarSearch(w)) });
+	private List<SearchEntity> entities = new ArrayList<SearchEntity>();
 
 	@Override
 	public void setup()
 	{
-		size(displayWidth, displayHeight + (w.getBlockHeight() * entities.size()));
+		world = new World(this, 48, 32);
+		player = new PlayerEntity(this, world, new Point(5, 5), color(0, 0, 0));
+
+		entities.add(new SearchEntity(this, world, new Point(1, 1), color(255, 255, 25), player, new AStarSearch(world)));
+		entities.add(new SearchEntity(this, world, new Point(4, 1), color(25, 255, 255), player, new IterativeDeepening(world)));
+		entities.add(new SearchEntity(this, world, new Point(3, 3), color(255, 25, 255), player, new DStarSearch(world)));
+
+		size(displayWidth, displayHeight + (world.getBlockHeight() * entities.size()));
 	}
 
 	@Override
@@ -62,9 +69,7 @@ public class Search extends PApplet
 
 		background(255);
 
-		w.draw();
-
-		noStroke();
+		world.draw();
 		player.draw();
 
 		for (SearchEntity e : entities) {
@@ -73,7 +78,7 @@ public class Search extends PApplet
 
 		noStroke();
 		fill(0, 0, 0);
-		rect(0, displayHeight, displayWidth, w.getBlockHeight() * 3);
+		rect(0, displayHeight, displayWidth, world.getBlockHeight() * 3);
 
 		fill(255);
 		textAlign(LEFT);
@@ -82,7 +87,7 @@ public class Search extends PApplet
 		int offset = 0;
 		for (SearchEntity e : entities) {
 			fill(e.getColor());
-			text(e.getResults(), 20, displayHeight + ++offset * w.getBlockHeight() - 4);
+			text(e.getResults(), 20, displayHeight + ++offset * world.getBlockHeight() - 4);
 		}
 	}
 
