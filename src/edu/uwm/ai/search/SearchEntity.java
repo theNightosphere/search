@@ -101,7 +101,7 @@ public class SearchEntity extends Entity
 			lastGoal = new Point(e.getPoint());
 
 			long st = System.nanoTime();
-			SearchResult result = algorithm.getPath(getPoint(), e.getPoint());
+			SearchResult result = algorithm.search(getPoint(), e.getPoint());
 			pTime = (System.nanoTime() - st) / 1e6;
 			pCost = result.getNumberNodesExpanded();
 

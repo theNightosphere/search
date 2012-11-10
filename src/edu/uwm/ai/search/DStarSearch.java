@@ -36,7 +36,7 @@ public class DStarSearch extends BaseSearchAlgorithm
 	}
 
 	@Override
-	public SearchResult getPath(Point initial, Point goal)
+	public SearchResult search(Point initial, Point goal)
 	{
 		return new SearchResult(new LinkedList<Point>(), 0);
 	}
