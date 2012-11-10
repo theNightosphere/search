@@ -1,2 +1,3 @@
-search
-======
+Adaptive Search Algorithm Comparison
+====================================
+
