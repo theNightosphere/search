@@ -22,6 +22,8 @@
 
 package edu.uwm.ai.search;
 
+import java.util.Random;
+
 import processing.core.PApplet;
 
 /**
@@ -35,6 +37,7 @@ public class World
 	private final int w;
 	private final int h;
 	private final boolean[] obstacles;
+	private final Random random = new Random();
 
 	public World(PApplet parent, int w, int h)
 	{
@@ -44,7 +47,24 @@ public class World
 		this.h = h;
 		this.obstacles = new boolean[w * h];
 
-		generateWorld();
+		for (int i = 0; i < w; i++) {
+			for (int j = 0; j < h; j++) {
+				if (random.nextDouble() < .1) {
+					setObstacle(i, j);
+				}
+			}
+		}
+	}
+
+	public Point getRandomFreePoint()
+	{
+		Point p;
+
+		do {
+			p = new Point((int) (random.nextDouble() * w), (int) (random.nextDouble() * h));
+		} while (!isValidPosition(p));
+
+		return p;
 	}
 
 	public int getWidth()
@@ -112,19 +132,5 @@ public class World
 	private int getIndex(int i, int j)
 	{
 		return j * h + i;
-	}
-
-	private void generateWorld()
-	{
-		//
-		// TODO - generate with better consistency
-
-		for (int i = 0; i < w; i++) {
-			for (int j = 0; j < h; j++) {
-				if (Math.random() < .1) {
-					setObstacle(i, j);
-				}
-			}
-		}
 	}
 }

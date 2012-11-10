@@ -47,11 +47,11 @@ public class Search extends PApplet
 	public void setup()
 	{
 		world = new World(this, 48, 32);
-		player = new PlayerEntity(this, world, new Point(5, 5), color(0, 0, 0));
+		player = new PlayerEntity(this, world, world.getRandomFreePoint(), color(0, 0, 0));
 
-		entities.add(new SearchEntity(this, world, new Point(1, 1), color(255, 255, 25), player, new AStarSearch(world)));
-		entities.add(new SearchEntity(this, world, new Point(4, 1), color(25, 255, 255), player, new IterativeDeepening(world)));
-		entities.add(new SearchEntity(this, world, new Point(3, 3), color(255, 25, 255), player, new DStarSearch(world)));
+		entities.add(new SearchEntity(this, world, world.getRandomFreePoint(), color(255, 255, 25), player, new AStarSearch(world)));
+		entities.add(new SearchEntity(this, world, world.getRandomFreePoint(), color(25, 255, 255), player, new IterativeDeepening(world)));
+		entities.add(new SearchEntity(this, world, world.getRandomFreePoint(), color(255, 25, 255), player, new DStarSearch(world)));
 
 		size(displayWidth, displayHeight + (world.getBlockHeight() * entities.size()));
 	}
