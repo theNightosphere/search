@@ -1,5 +1,3 @@
-package edu.uwm.ai.search;
-
 /*
  * This file is part of the search package.
  *
@@ -21,6 +19,8 @@ package edu.uwm.ai.search;
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
  */
+
+package edu.uwm.ai.search;
 
 import java.util.Arrays;
 import java.util.List;
