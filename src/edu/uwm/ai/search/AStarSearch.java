@@ -23,9 +23,10 @@
 package edu.uwm.ai.search;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 
 /**
  * @author Eric Fritz
@@ -39,10 +40,16 @@ public class AStarSearch extends BaseSearchAlgorithm
 	}
 
 	@Override
-	public SearchResult search(Point initial, Point goal)
+	public SearchResult search(Point initial, final Point goal)
 	{
 		Map<Point, Point> pred = new HashMap<Point, Point>();
-		List<Point> successors = new ArrayList<Point>();
+		PriorityQueue<Point> successors = new PriorityQueue<Point>(16, new Comparator<Point>() {
+			@Override
+			public int compare(Point o1, Point o2)
+			{
+				return (int) (heuristic(o1, goal) - heuristic(o2, goal));
+			}
+		});
 
 		successors.add(initial);
 		pred.put(initial, null);
@@ -50,7 +57,7 @@ public class AStarSearch extends BaseSearchAlgorithm
 		int cost = 0;
 		while (!successors.isEmpty()) {
 			cost++;
-			Point current = successors.remove(0);
+			Point current = successors.poll();
 
 			if (current.equals(goal)) {
 				return new SearchResult(backtrace(pred, current), cost);
@@ -59,7 +66,7 @@ public class AStarSearch extends BaseSearchAlgorithm
 			for (Point successor : getSuccessors(current)) {
 				if (!hasKey(pred, successor)) {
 					pred.put(successor, current);
-					addSuccessor(pred, successors, successor, goal);
+					successors.add(successor);
 				}
 			}
 		}
@@ -76,18 +83,6 @@ public class AStarSearch extends BaseSearchAlgorithm
 		}
 
 		return false;
-	}
-
-	private void addSuccessor(Map<Point, Point> pred, List<Point> successors, Point successor, Point goal)
-	{
-		double h = heuristic(successor, goal) + backtrace(pred, successor).size();
-
-		int i = 0;
-		while (i < successors.size() && h > heuristic(successors.get(i), goal) + backtrace(pred, successors.get(i)).size()) {
-			i++;
-		}
-
-		successors.add(i, successor);
 	}
 
 	private double heuristic(Point p, Point goal)
