@@ -253,7 +253,7 @@ public class DStarSearch extends BaseSearchAlgorithm
 	//private void calculate
 	
 	@Override
-	public SearchResult getPath(Point initial, Point goal)
+	public SearchResult search(Point initial, Point goal)
 	{
 		//Update the start and goal nodes to the new initial and goal positions
 		start_n.setPoint(initial);

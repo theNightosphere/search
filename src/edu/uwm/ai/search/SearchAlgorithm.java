@@ -28,5 +28,5 @@ package edu.uwm.ai.search;
  */
 public interface SearchAlgorithm
 {
-	public SearchResult getPath(Point initial, Point goal);
+	public SearchResult search(Point initial, Point goal);
 }

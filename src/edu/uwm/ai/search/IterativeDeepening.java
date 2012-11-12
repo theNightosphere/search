@@ -39,7 +39,7 @@ public class IterativeDeepening extends BaseSearchAlgorithm
 	}
 
 	@Override
-	public SearchResult getPath(Point initial, Point goal)
+	public SearchResult search(Point initial, Point goal)
 	{
 		Map<Point, Point> pred = new HashMap<Point, Point>();
 		List<WrappedPoint> successors = new ArrayList<WrappedPoint>();

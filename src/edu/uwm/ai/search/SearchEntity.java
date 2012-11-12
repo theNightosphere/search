@@ -44,6 +44,7 @@ public class SearchEntity extends Entity
 	private int tCost;
 	private double pTime;
 	private double tTime;
+	private int totalSearches;
 
 	// TODO - store costs and draw them
 
@@ -88,7 +89,7 @@ public class SearchEntity extends Entity
 
 	public String getResults()
 	{
-		return String.format("[%s] previous: %8.2fms, %6d nodes exapnded; total: %8.2fms, %6d nodes expanded", algorithm, pTime, pCost, tTime, tCost);
+		return String.format("[%s] %8.2fms (%8.2fms total, %8.2fms avg), %6d nodes exapnded (%6d total, %6d avg)", algorithm, pTime, tTime, totalSearches == 0 ? 0 : (tTime / totalSearches), pCost, tCost, totalSearches == 0 ? 0 : (tCost / totalSearches));
 	}
 
 	public void update()
@@ -101,7 +102,7 @@ public class SearchEntity extends Entity
 			lastGoal = new Point(e.getPoint());
 
 			long st = System.nanoTime();
-			SearchResult result = algorithm.getPath(getPoint(), e.getPoint());
+			SearchResult result = algorithm.search(getPoint(), e.getPoint());
 			pTime = (System.nanoTime() - st) / 1e6;
 			pCost = result.getNumberNodesExpanded();
 
@@ -110,6 +111,7 @@ public class SearchEntity extends Entity
 			if (!path.isEmpty()) {
 				tTime += pTime;
 				tCost += pCost;
+				totalSearches++;
 
 				if (!path.isEmpty()) {
 					path.remove(0);
