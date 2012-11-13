@@ -39,6 +39,7 @@ public class SearchResult
 		this.cost = cost;
 	}
 
+
 	public List<Point> getPath()
 	{
 		return path;
