@@ -23,10 +23,15 @@
 package edu.uwm.ai.search;
 
 /**
- * TODO: Implement priority queue of locally inconsistent vertices.
+ * TODO: Find a way to return a SearchPath given that pred is an ArrayList of DNodes and not points.
+ * TODO: Find an appropriate location to add each node to the vertexHash.
+ * TODO: Figure out if predecessors needs to be a list of all possible predecessors instead of just THE predecessor
  * 
  */
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.PriorityQueue;
@@ -45,6 +50,7 @@ public class DStarSearch extends BaseSearchAlgorithm
 	 */
 	private Map<Integer,DNode> vertexHash;
 	private PriorityQueue<DNode> openList;
+	private Map<DNode, DNode> pred;
 	private int k_m;
 	//The start and goal nodes, assigned and referenced within getPath
 	private DNode start_n, goal_n;
@@ -54,6 +60,8 @@ public class DStarSearch extends BaseSearchAlgorithm
 		super(w);
 		vertexHash = new HashMap<Integer, DNode>();
 		openList = new PriorityQueue<DNode>();
+		pred = new HashMap<DNode, DNode>();
+		
 		start_n = new DNode(new Point(0,0), 0, Integer.MAX_VALUE);
 		goal_n = new DNode(new Point(0,0), Integer.MAX_VALUE, Integer.MAX_VALUE);
 		k_m = 0;
@@ -73,10 +81,12 @@ public class DStarSearch extends BaseSearchAlgorithm
 	 * @date 11.12.2012 (Last modified by Reed Johnson)
 	 *
 	 */
+	@SuppressWarnings("rawtypes")
 	private class DNode extends Point implements Comparable{
 		
 		private int rhs;
 		private int g_val;
+		private int cost;
 		//k1 and k2 are the two parts of the node's key. The key is used to compare different nodes in priority queue
 		private int k1, k2;
 		
@@ -84,6 +94,7 @@ public class DStarSearch extends BaseSearchAlgorithm
 			super(p.getX(),p.getY());
 			this.g_val = g_val;
 			this.rhs = rhs;
+			this.cost = 1;
 		}
 		
 		public DNode(DNode d)
@@ -108,6 +119,27 @@ public class DStarSearch extends BaseSearchAlgorithm
 		public void setRhs(int new_rhs)
 		{
 			this.rhs = new_rhs;
+		}
+		
+		/**
+		 * Returns the integer representing the cost to traverse this DNode.
+		 * If it returns Integer.MAX_INT the node is blocked.
+		 * @return int The integer cost to traverse this node.
+		 */
+		public int getCost()
+		{
+			return cost;
+		}
+		
+		/**
+		 * Sets the cost to traverse this DNode.
+		 * Passing Integer.MAX_INT means the node is blocked.
+		 * @param new_cost int The new cost to traverse this DNode.
+		 */
+		@SuppressWarnings("unused")
+		public void setCost(int new_cost)
+		{
+			this.cost = new_cost;
 		}
 		
 		/**
@@ -152,7 +184,7 @@ public class DStarSearch extends BaseSearchAlgorithm
 		
 		/**
 		 * Sets the Node's second key value. When automatically calculated, this is the min of g and rhs values.
-		 * @param new_k2
+		 * @param new_k2 The integer value representing the new second key for the DNode.
 		 * @date 11.12.2012 (Last modified by Reed Johnson)
 		 */
 		public void setK2(int new_k2)
@@ -263,21 +295,159 @@ public class DStarSearch extends BaseSearchAlgorithm
 		goal_n.setK1(heuristic(start_n, goal_n));
 		goal_n.setK2(0);
 		
+		pred.put(goal_n, null);
 		openList.add(goal_n);
+		
 		start_n.calculateKey();
 		DNode u = openList.peek();
 		while((u.compareTo(start_n) == -1) || start_n.getRhs() > start_n.getG())
 		{
+			//Store u's old keys in a deep copy
+			DNode k_new = new DNode(u);
+			//Recalculate its key, then compare it.
+			k_new.calculateKey();
+			
+			if(u.compareTo(k_new) == -1)
+			{
+				//Remove old u node, insert updated u node.
+				openList.poll();
+				openList.offer(k_new);
+			}
+			else if (u.getG() > u.getRhs())
+			{
+				u.setG(u.getRhs());
+				//Remove u
+				openList.poll();
+				//Even though type is point, we actually are only iterating over DNodes.
+				int total_cost = 0;
+				for(DNode s : backtrace(pred, u))
+				{
+					if(!s.equals(goal_n))
+					{
+						//c(s,u) is the total cost of each node between s and u.
+						total_cost += s.getCost();
+						s.setRhs(Math.min(s.getRhs(), total_cost + u.getCost()));
+					}
+					updateVertex(s);
+					
+				}
+			}
+			else
+			{
+				int g_old = u.getG();
+				u.setG(Integer.MAX_VALUE);
+				//Get the G values of u's successors
+				ArrayList<DNode> u_succ = successors(u);
+				int u_min = minimumOfSucc(u_succ);
+				//Following is done on pred(u)union{u}, so u is done independently, then predecessors are iterated through
+				if(u.getRhs() == g_old){
+					if(!u.equals(goal_n))
+					{
+						u.setRhs(u_min);
+					}
+					updateVertex(u);
+				}
+				//The above is now performed on pred(u)
+				for(DNode s : backtrace(pred, u))
+				{
+					ArrayList<DNode> s_succ = successors(s);
+					int s_min = minimumOfSucc(s_succ);
+					if(s.getRhs() == g_old){
+						if(!s.equals(goal_n))
+						{
+							s.setRhs(s_min);
+						}
+						updateVertex(s);
+					}
+				}
+			}
 			
 		}
-		
-		
-		
-		
-		
+		if(start_n.getRhs() != Integer.MAX_VALUE)
+		{
+			//return new SearchResult(backtrace(pred, start_n), 10);
+		}
 		return new SearchResult(new LinkedList<Point>(), 0);
 	}
+	
+	/**
+	 * Takes an ArrayList of DNodes and returns the minimum of g(node) + cost(node) for each 
+	 * DNode.
+	 * @param successors An ArrayList of DNodes
+	 * @return int The integer value of the smallest g + cost
+	 * @date 11.12.2012 (Last modified by Reed Johnson)
+	 */
+	private int minimumOfSucc(ArrayList<DNode> successors)
+	{
+		ArrayList<Integer> g_values = new ArrayList<Integer>();
+		for(int i = 0; i<g_values.size(); i++)
+		{
+			g_values.set(i, successors.get(i).getG() + successors.get(i).getCost());
+		}
+		return Collections.min(g_values);
+	}
+	
+	/**
+	 * Takes a node, and returns an ArrayList of DNodes of all the successors of the DNode.
+	 * If the DNode is not yet a member of the vertexHash, it is added to the hashmap and the ArrayList.
+	 * If the DNode is a member of the vertexHash, it is added to the ArrayList.
+	 * @param u The DNode required to generate successors
+	 * @return The ArrayList of all possible successors to the current node.
+	 * @date 11.12.2012 (Last modified by Reed Johnson)
+	 */
+	private ArrayList<DNode> successors(DNode u)
+	{
+		//Get a list of successors, determine whether they have been discovered. If not, add them to vertexHash
+		List<Point> temp_list = getSuccessors(new Point(u.getX(), u.getY()));
+		ArrayList<DNode> succ_nodes = new ArrayList<DNode>();
+		for (Point pt : temp_list)
+		{
+			int item_hash = vertexHashCode(pt);
+			if(vertexHash.containsKey(item_hash))
+			{
+				//The vertex already exists, so add it to the list of successors
+				succ_nodes.add(vertexHash.get(item_hash));
+			}
+			else
+			{
+				//The vertex does not exist. Create it, add to vertexHash, add to list of successors.
+				DNode temp_node = new DNode(pt, Integer.MAX_VALUE, Integer.MAX_VALUE);
+				vertexHash.put(vertexHashCode(temp_node), temp_node);
+				succ_nodes.add(temp_node);
+			}
+		}
+		return succ_nodes;
+	}
 
+	private void updateVertex(DNode u)
+	{
+		boolean is_in_open = openList.contains(u);
+		if(is_in_open)
+		{
+			if(u.getG() == u.getRhs())
+			{
+				//U is locally consistent. Remove it from the open list.
+				openList.remove(u);
+			}
+			else
+			{
+				//U is inconsistent. Change its key
+				openList.remove(u);
+				u.calculateKey();
+				openList.offer(u);
+			}
+		}
+		else
+		{
+			if(u.getG() != u.getRhs())
+			{
+				//u is locally inconsistent but not in the open list. Add it
+				openList.offer(u);
+			}
+		}
+		
+	}
+	
 	@Override
 	public String toString()
 	{
@@ -292,5 +462,34 @@ public class DStarSearch extends BaseSearchAlgorithm
 	private int vertexHashCode(DNode d)
 	{
 		return d.getX() + 1492*d.getY();
+	}
+	
+	/**
+	 * Simple function that returns an integer value to determine whether the DNode constructed
+	 * from point P exists in vertexHash
+	 * @param d An initialized DNode object.
+	 * @return An integer representing the code to associate with that node
+	 */
+	private int vertexHashCode(Point p)
+	{
+		return p.getX() + 1492*p.getY();
+	}
+	
+	/**
+	 * The same implementation as backtrace in BaseSearchAlgorithm except specialized for use with DNodes.
+	 * @param predecessors
+	 * @param p
+	 * @return
+	 */
+	private List<DNode> backtrace(Map<DNode, DNode> predecessors, DNode p)
+	{
+		List<DNode> path = new LinkedList<DNode>();
+
+		while (p != null) {
+			path.add(0, p);
+			p = predecessors.get(p);
+		}
+
+		return path;
 	}
 }
