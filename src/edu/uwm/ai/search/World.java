@@ -47,10 +47,16 @@ public class World
 		this.h = h;
 		this.obstacles = new boolean[w * h];
 
-		for (int i = 0; i < w; i++) {
-			for (int j = 0; j < h; j++) {
-				if (random.nextDouble() < .1) {
-					setObstacle(i, j);
+		for (int k = 0; k < 20; k++) {
+			int rw = (int) (Math.random() * 5) + 2;
+			int rh = (int) (Math.random() * 5) + 2;
+
+			int i = (int) (Math.random() * (w - rw / 2));
+			int j = (int) (Math.random() * (h - rh / 2));
+
+			for (int dw = 0; dw < rw; dw++) {
+				for (int dh = 0; dh < rh; dh++) {
+					setObstacle(i + dw, j + dh);
 				}
 			}
 		}
