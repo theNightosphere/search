@@ -42,12 +42,16 @@ public class AStarSearch extends BaseSearchAlgorithm
 	@Override
 	public SearchResult search(Point initial, final Point goal)
 	{
-		Map<Point, Point> pred = new HashMap<Point, Point>();
+		final Map<Point, Point> pred = new HashMap<Point, Point>();
+
 		PriorityQueue<Point> successors = new PriorityQueue<Point>(16, new Comparator<Point>() {
 			@Override
 			public int compare(Point o1, Point o2)
 			{
-				return (int) (heuristic(o1, goal) - heuristic(o2, goal));
+				double h1 = heuristic(o1, goal) + backtrace(pred, o1).size();
+				double h2 = heuristic(o2, goal) + backtrace(pred, o2).size();
+
+				return (int) (h1 - h2);
 			}
 		});
 
