@@ -408,9 +408,10 @@ public class DStarSearch extends BaseSearchAlgorithm
 		}
 
 		ArrayList<Integer> g_values = new ArrayList<Integer>();
-		for (int i = 0; i < successors.size(); i++) {
-			g_values.set(i, successors.get(i).getG() + successors.get(i).getCost());
+		for (DNode node : successors) {
+			g_values.add(node.getG() + node.getCost());
 		}
+
 		return Collections.min(g_values);
 	}
 
