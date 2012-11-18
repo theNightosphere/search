@@ -403,13 +403,18 @@ public class DStarSearch extends BaseSearchAlgorithm
 	 * @param successors An ArrayList of DNodes
 	 * @return int The integer value of the smallest g + cost
 	 * @date 11.12.2012 (Last modified by Reed Johnson)
+	 * @date 11.17.2012 (Last modified by Eric Fritz)
 	 */
 	private int minimumOfSucc(ArrayList<DNode> successors)
 	{
+		if (successors.isEmpty()) {
+			return Integer.MIN_VALUE;
+		}
+
 		ArrayList<Integer> g_values = new ArrayList<Integer>();
-		for(int i = 0; i<g_values.size(); i++)
 		{
 			g_values.set(i, successors.get(i).getG() + successors.get(i).getCost());
+		for (int i = 0; i < successors.size(); i++) {
 		}
 		return Collections.min(g_values);
 	}
