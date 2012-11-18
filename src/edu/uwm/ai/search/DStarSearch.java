@@ -533,6 +533,7 @@ public class DStarSearch extends BaseSearchAlgorithm
 	 * @param goalNode The end node of the path
 	 * @return A LinkedList of Point objects that provides a path from the start to the goal
 	 * @date 11.17.2012 (Last edited by Reed Johnson)
+	 * @date 11.17.2012 (Last modified by Eric Fritz)
 	 */
 	private List<Point> getPath(DNode startNode, DNode goalNode)
 	{
@@ -561,6 +562,11 @@ public class DStarSearch extends BaseSearchAlgorithm
 			}
 			//The new currentNode is one such that it minimizes the cost to reach it added to its g value.
 			currentNode = Collections.min(actualSuccessors, new Comparator<DNode>(){
+
+			if (actualSuccessors.isEmpty()) {
+				break;
+			}
+
 				@Override
 				public int compare(DNode o1, DNode o2)
 				{
