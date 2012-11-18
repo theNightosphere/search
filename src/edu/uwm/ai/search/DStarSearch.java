@@ -23,13 +23,14 @@
 package edu.uwm.ai.search;
 
 /**
+ * TODO: Figure out a way to get a path to not repeat values endlessly
  * TODO: Find a way to return a SearchPath given that pred is an ArrayList of DNodes and not points.
- * TODO: Find an appropriate location to add each node to the vertexHash.
  * TODO: Figure out if predecessors needs to be a list of all possible predecessors instead of just THE predecessor
  * 
  */
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -62,13 +63,15 @@ public class DStarSearch extends BaseSearchAlgorithm
 		openList = new PriorityQueue<DNode>();
 		pred = new HashMap<DNode, DNode>();
 		
-		start_n = new DNode(new Point(0,0), 0, Integer.MAX_VALUE);
-		goal_n = new DNode(new Point(0,0), Integer.MAX_VALUE, Integer.MAX_VALUE);
+		//start_n = new DNode(new Point(0,0), Integer.MAX_VALUE, Integer.MAX_VALUE);
+		//goal_n = new DNode(new Point(0,0), 0, Integer.MAX_VALUE);
+		start_n = null;
+		goal_n = null;
 		k_m = 0;
 		
 		//Place the start and goal in the list of known/discovered vertices.
-		vertexHash.put(vertexHashCode(start_n), start_n);
-		vertexHash.put(vertexHashCode(goal_n),goal_n);
+		//vertexHash.put(vertexHashCode(start_n), start_n);
+		//vertexHash.put(vertexHashCode(goal_n),goal_n);
 		
 		
 		
@@ -288,8 +291,29 @@ public class DStarSearch extends BaseSearchAlgorithm
 	public SearchResult search(Point initial, Point goal)
 	{
 		//Update the start and goal nodes to the new initial and goal positions
-		start_n.setPoint(initial);
-		goal_n.setPoint(goal);
+		//start_n.setPoint(initial);
+		//goal_n.setPoint(goal);
+		if(vertexHash.containsKey(vertexHashCode(initial)))
+		{
+			start_n = vertexHash.get(vertexHashCode(initial));
+		}
+		else
+		{
+			start_n = new DNode(initial, Integer.MAX_VALUE, Integer.MAX_VALUE);
+			vertexHash.put(vertexHashCode(initial), start_n);
+		}
+		
+		if(vertexHash.containsKey(vertexHashCode(goal)))
+		{
+			goal_n = vertexHash.get(vertexHashCode(goal));
+		}
+		else
+		{
+			goal_n = new DNode(goal, 0, Integer.MAX_VALUE);
+			vertexHash.put(vertexHashCode(goal), goal_n);
+		}
+		
+		
 		//Goal's key values are updated each time SearchResult is called. The assumption in the original D* Lite paper was
 		//that the goal did not move, but the environment changed. In our implementation, the goal also moves.
 		goal_n.setK1(heuristic(start_n, goal_n));
@@ -310,23 +334,20 @@ public class DStarSearch extends BaseSearchAlgorithm
 			if(u.compareTo(k_new) == -1)
 			{
 				//Remove old u node, insert updated u node.
+				u.calculateKey();
 				openList.poll();
-				openList.offer(k_new);
+				openList.offer(u);
 			}
 			else if (u.getG() > u.getRhs())
 			{
 				u.setG(u.getRhs());
 				//Remove u
 				openList.poll();
-				//Even though type is point, we actually are only iterating over DNodes.
-				int total_cost = 0;
-				for(DNode s : backtrace(pred, u))
+				for(DNode s : successors(u))
 				{
 					if(!s.equals(goal_n))
 					{
-						//c(s,u) is the total cost of each node between s and u.
-						total_cost += s.getCost();
-						s.setRhs(Math.min(s.getRhs(), total_cost + u.getCost()));
+						s.setRhs(Math.min(s.getRhs(), s.getCost() + u.getG()));
 					}
 					updateVertex(s);
 					
@@ -361,12 +382,18 @@ public class DStarSearch extends BaseSearchAlgorithm
 					}
 				}
 			}
+			//Start again with a new u.
+			u = openList.peek();
+			//Calculate start again
+			start_n.calculateKey();
 			
 		}
+		//A path exists to the goal
 		if(start_n.getRhs() != Integer.MAX_VALUE)
 		{
-			//return new SearchResult(backtrace(pred, start_n), 10);
+			return new SearchResult(getPath(start_n, goal_n), 10);
 		}
+		//No path exists to goal. 
 		return new SearchResult(new LinkedList<Point>(), 0);
 	}
 	
@@ -458,10 +485,11 @@ public class DStarSearch extends BaseSearchAlgorithm
 	 * Simple function that returns an integer value to place the DNode d into the hash table of vertices
 	 * @param d An initialized DNode object.
 	 * @return An integer representing the code to associate with that node
+	 * @date 11.17.2012 (Last updated by Reed Johnson) changed prime to 8239
 	 */
 	private int vertexHashCode(DNode d)
 	{
-		return d.getX() + 1492*d.getY();
+		return 1039*d.getX() + 8329*d.getY();
 	}
 	
 	/**
@@ -472,7 +500,7 @@ public class DStarSearch extends BaseSearchAlgorithm
 	 */
 	private int vertexHashCode(Point p)
 	{
-		return p.getX() + 1492*p.getY();
+		return 1039*p.getX() + 8329*p.getY();
 	}
 	
 	/**
@@ -490,6 +518,95 @@ public class DStarSearch extends BaseSearchAlgorithm
 			p = predecessors.get(p);
 		}
 
+		return path;
+	}
+	
+	/**
+	 * Calculates a path from the starting node to the goal node by choosing the successor
+	 * that minimizes c(s,s')+g(s') where s' is a successor of s. 
+	 * @param startNode The beginning node of the path
+	 * @param goalNode The end node of the path
+	 * @return A LinkedList of Point objects that provides a path from the start to the goal
+	 * @date 11.17.2012 (Last edited by Reed Johnson)
+	 */
+	private List<Point> getPath(DNode startNode, DNode goalNode)
+	{
+		List<Point> path = new LinkedList<Point>();
+		
+		DNode currentNode = startNode;
+		//Add start to path, then continually add successors that 
+		path.add(new Point(currentNode.getX(),currentNode.getY()));
+		List<DNode> possibleSuccessorsList;
+		List<DNode> actualSuccessors = new ArrayList<DNode>();
+		
+		while(!currentNode.equals(goalNode))
+		{
+			//Clear the list of successors from previous search
+			actualSuccessors.clear();
+			possibleSuccessorsList = successors(currentNode);
+			
+			//Only add successors which have been discovered and are in the vertex hashmap
+			for(DNode s : possibleSuccessorsList)
+			{
+				//Check if location has been added to vertex and is not already part of path. 
+				if(vertexHash.containsValue(s) && !path.contains(new Point(s.getX(),s.getY())))
+				{
+					actualSuccessors.add(s);
+				}
+			}
+			//The new currentNode is one such that it minimizes the cost to reach it added to its g value.
+			currentNode = Collections.min(actualSuccessors, new Comparator<DNode>(){
+				@Override
+				public int compare(DNode o1, DNode o2)
+				{
+					int cost1 = o1.getCost() + o1.getRhs();
+					int cost2 = o2.getCost() + o2.getRhs();
+					
+					//Guard against math wrapping around. Because infinity is Integer.MAX_VALUE, when
+					//Integer.MAX_VALUE + 1 is performed, the value becomes Integer.MIN_VALUE
+					if(cost1 == Integer.MAX_VALUE || cost2 == Integer.MAX_VALUE)
+					{
+						if(cost1 < cost2)
+						{
+							return -1;
+						}
+						else
+						{
+							return 1;
+						}
+					}
+					
+					if(cost1 < cost2)
+					{
+						return -1;
+					} 
+					else if (cost1 == cost2)
+					{
+						int distFromGoal1 = o1.getK1();
+						int distFromGoal2 = o2.getK1();
+						//If costs are equal, determine their heuristic distance
+						if (distFromGoal1 < distFromGoal2)
+						{
+							return -1;
+						}
+						else if (distFromGoal1 == distFromGoal2)
+						{
+							return 0;
+						}
+						else
+						{
+							return 1;
+						}
+					}
+					else
+					{
+						return 1;
+					}
+				}
+			});
+			path.add(new Point(currentNode.getX(),currentNode.getY()));
+		}
+		
 		return path;
 	}
 }

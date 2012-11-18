@@ -89,7 +89,7 @@ public class SearchEntity extends Entity
 
 	public String getResults()
 	{
-		return String.format("[%s] %8.2fms (%8.2fms total, %8.2fms avg), %6d nodes exapnded (%6d total, %6d avg)", algorithm, pTime, tTime, totalSearches == 0 ? 0 : (tTime / totalSearches), pCost, tCost, totalSearches == 0 ? 0 : (tCost / totalSearches));
+		return String.format("[%s] %8.2fms (%8.2fms total, %8.2fms avg), %6d nodes expanded (%6d total, %6d avg)", algorithm, pTime, tTime, totalSearches == 0 ? 0 : (tTime / totalSearches), pCost, tCost, totalSearches == 0 ? 0 : (tCost / totalSearches));
 	}
 
 	public void update()
