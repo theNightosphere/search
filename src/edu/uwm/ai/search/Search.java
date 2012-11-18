@@ -77,10 +77,6 @@ public class Search extends PApplet
 			e.draw();
 		}
 
-		noStroke();
-		fill(0, 0, 0);
-		rect(0, displayHeight, displayWidth, world.getBlockHeight() * entities.size());
-
 		fill(255);
 		textAlign(LEFT);
 		textFont(createFont("Courier New", 12));
