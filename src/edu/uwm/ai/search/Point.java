@@ -63,6 +63,12 @@ public class Point
 	}
 
 	@Override
+	public int hashCode()
+	{
+		return 31 * posX + posY;
+	}
+
+	@Override
 	public boolean equals(Object o)
 	{
 		if (o == this) {

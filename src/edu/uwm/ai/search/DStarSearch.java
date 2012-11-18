@@ -48,7 +48,7 @@ public class DStarSearch extends BaseSearchAlgorithm
 	 * values and rhs values are estimates to the goal, not the start. The constructor method for
 	 * the search algorithm acts as the initialize function for D* Lite
 	 */
-	private Map<Integer, DNode> vertexHash;
+	private Map<Point, DNode> vertexHash;
 	private PriorityQueue<DNode> openList;
 	private Map<DNode, DNode> pred;
 	private int k_m;
@@ -58,7 +58,7 @@ public class DStarSearch extends BaseSearchAlgorithm
 	public DStarSearch(World w)
 	{
 		super(w);
-		vertexHash = new HashMap<Integer, DNode>();
+		vertexHash = new HashMap<Point, DNode>();
 		openList = new PriorityQueue<DNode>();
 		pred = new HashMap<DNode, DNode>();
 
@@ -304,18 +304,18 @@ public class DStarSearch extends BaseSearchAlgorithm
 		// Update the start and goal nodes to the new initial and goal positions
 		// start_n.setPoint(initial);
 		// goal_n.setPoint(goal);
-		if (vertexHash.containsKey(vertexHashCode(initial))) {
-			start_n = vertexHash.get(vertexHashCode(initial));
+		if (vertexHash.containsKey(initial)) {
+			start_n = vertexHash.get(initial);
 		} else {
 			start_n = new DNode(initial, Integer.MAX_VALUE, Integer.MAX_VALUE);
-			vertexHash.put(vertexHashCode(initial), start_n);
+			vertexHash.put(initial, start_n);
 		}
 
-		if (vertexHash.containsKey(vertexHashCode(goal))) {
-			goal_n = vertexHash.get(vertexHashCode(goal));
+		if (vertexHash.containsKey(goal)) {
+			goal_n = vertexHash.get(goal);
 		} else {
 			goal_n = new DNode(goal, 0, Integer.MAX_VALUE);
-			vertexHash.put(vertexHashCode(goal), goal_n);
+			vertexHash.put(goal, goal_n);
 		}
 
 		// Goal's key values are updated each time SearchResult is called. The assumption in the
@@ -432,15 +432,14 @@ public class DStarSearch extends BaseSearchAlgorithm
 		List<Point> temp_list = getSuccessors(new Point(u.getX(), u.getY()));
 		ArrayList<DNode> succ_nodes = new ArrayList<DNode>();
 		for (Point pt : temp_list) {
-			int item_hash = vertexHashCode(pt);
-			if (vertexHash.containsKey(item_hash)) {
+			if (vertexHash.containsKey(pt)) {
 				// The vertex already exists, so add it to the list of successors
-				succ_nodes.add(vertexHash.get(item_hash));
+				succ_nodes.add(vertexHash.get(pt));
 			} else {
 				// The vertex does not exist. Create it, add to vertexHash, add to list of
 				// successors.
 				DNode temp_node = new DNode(pt, Integer.MAX_VALUE, Integer.MAX_VALUE);
-				vertexHash.put(vertexHashCode(temp_node), temp_node);
+				vertexHash.put(temp_node, temp_node);
 				succ_nodes.add(temp_node);
 			}
 		}
@@ -473,33 +472,6 @@ public class DStarSearch extends BaseSearchAlgorithm
 	public String toString()
 	{
 		return "D*";
-	}
-
-	/**
-	 * Simple function that returns an integer value to place the DNode d into the hash table of
-	 * vertices
-	 * 
-	 * @param d
-	 *            An initialized DNode object.
-	 * @return An integer representing the code to associate with that node
-	 * @date 11.17.2012 (Last updated by Reed Johnson) changed prime to 8239
-	 */
-	private int vertexHashCode(DNode d)
-	{
-		return 1039 * d.getX() + 8329 * d.getY();
-	}
-
-	/**
-	 * Simple function that returns an integer value to determine whether the DNode constructed from
-	 * point P exists in vertexHash
-	 * 
-	 * @param d
-	 *            An initialized DNode object.
-	 * @return An integer representing the code to associate with that node
-	 */
-	private int vertexHashCode(Point p)
-	{
-		return 1039 * p.getX() + 8329 * p.getY();
 	}
 
 	/**
