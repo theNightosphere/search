@@ -34,9 +34,12 @@ import java.util.PriorityQueue;
  */
 public class AStarSearch extends BaseSearchAlgorithm
 {
-	public AStarSearch(World w)
+	private Heuristic h;
+
+	public AStarSearch(World w, Heuristic h)
 	{
 		super(w);
+		this.h = h;
 	}
 
 	@Override
@@ -48,8 +51,8 @@ public class AStarSearch extends BaseSearchAlgorithm
 			@Override
 			public int compare(Point o1, Point o2)
 			{
-				double h1 = heuristic(o1, goal) + backtrace(pred, o1).size();
-				double h2 = heuristic(o2, goal) + backtrace(pred, o2).size();
+				double h1 = h.heuristic(o1, goal) + backtrace(pred, o1).size();
+				double h2 = h.heuristic(o2, goal) + backtrace(pred, o2).size();
 
 				return (int) (h1 - h2);
 			}
@@ -87,11 +90,6 @@ public class AStarSearch extends BaseSearchAlgorithm
 		}
 
 		return false;
-	}
-
-	private double heuristic(Point p, Point goal)
-	{
-		return Math.abs(p.getX() - goal.getX()) + Math.abs(p.getY() - goal.getY());
 	}
 
 	@Override
