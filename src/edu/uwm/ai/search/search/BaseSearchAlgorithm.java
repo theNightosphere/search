@@ -20,12 +20,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
  */
 
-package edu.uwm.ai.search;
+package edu.uwm.ai.search.search;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import edu.uwm.ai.search.World;
+import edu.uwm.ai.search.util.Point;
 
 /**
  * @author Eric Fritz

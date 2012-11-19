@@ -20,9 +20,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
  */
 
-package edu.uwm.ai.search;
+package edu.uwm.ai.search.agent;
 
 import java.util.List;
+
+import edu.uwm.ai.search.World;
+import edu.uwm.ai.search.search.SearchAlgorithm;
+import edu.uwm.ai.search.search.SearchResult;
+import edu.uwm.ai.search.util.Point;
 
 import processing.core.PApplet;
 

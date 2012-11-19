@@ -20,20 +20,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
  */
 
-package edu.uwm.ai.search;
+package edu.uwm.ai.search.heuristic;
+
+import edu.uwm.ai.search.util.Point;
 
 /**
  * @author Eric Fritz
  * @author Reed Johnson
  */
-public class EuclidianDistance implements Heuristic
+public interface Heuristic
 {
-	@Override
-	public double heuristic(Point p, Point goal)
-	{
-		int xDiff = p.getX() - goal.getX();
-		int yDiff = p.getY() - goal.getY();
-
-		return Math.sqrt(xDiff * xDiff + yDiff * yDiff);
-	}
+	public double heuristic(Point p, Point goal);
 }

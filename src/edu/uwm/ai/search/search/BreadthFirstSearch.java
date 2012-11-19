@@ -20,29 +20,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
  */
 
-package edu.uwm.ai.search;
+package edu.uwm.ai.search.search;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import edu.uwm.ai.search.World;
+import edu.uwm.ai.search.util.Point;
+
 /**
  * @author Eric Fritz
  * @author Reed Johnson
  */
-public class IterativeDeepening extends BaseSearchAlgorithm
+public class BreadthFirstSearch extends BaseSearchAlgorithm
 {
-	public IterativeDeepening(World w)
+	public BreadthFirstSearch(World w)
 	{
 		super(w);
 	}
 
 	@Override
-	public SearchResult search(Point initial, Point goal)
+	public SearchResult search(Point initial, final Point goal)
 	{
 		Map<Point, Point> pred = new HashMap<Point, Point>();
-		List<WrappedPoint> successors = new ArrayList<WrappedPoint>();
+		List<Point> successors = new ArrayList<Point>();
 
 		if (initial.equals(goal)) {
 			return new SearchResult(new ArrayList<Point>(), 0);
@@ -53,21 +56,17 @@ public class IterativeDeepening extends BaseSearchAlgorithm
 			pred.clear();
 			successors.clear();
 
-			successors.add(new WrappedPoint(initial, 0));
+			successors.add(initial);
 			pred.put(initial, null);
 
 			while (!successors.isEmpty()) {
 				cost++;
-				WrappedPoint current = successors.remove(0);
+				Point current = successors.remove(0);
 
-				if (current.depth > depthLimit) {
-					break;
-				}
-
-				for (Point successor : getSuccessors(current.p)) {
+				for (Point successor : getSuccessors(current)) {
 					if (!hasKey(pred, successor)) {
-						pred.put(successor, current.p);
-						successors.add(new WrappedPoint(successor, current.depth + 1));
+						pred.put(successor, current);
+						successors.add(successor);
 					}
 
 					if (successor.equals(goal)) {
@@ -94,18 +93,6 @@ public class IterativeDeepening extends BaseSearchAlgorithm
 	@Override
 	public String toString()
 	{
-		return "ID";
-	}
-
-	class WrappedPoint
-	{
-		public Point p;
-		public int depth;
-
-		public WrappedPoint(Point p, int depth)
-		{
-			this.p = p;
-			this.depth = depth;
-		}
+		return "BFS";
 	}
 }

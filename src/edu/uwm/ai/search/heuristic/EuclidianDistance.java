@@ -20,33 +20,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
  */
 
-package edu.uwm.ai.search;
+package edu.uwm.ai.search.heuristic;
 
-import java.util.List;
+import edu.uwm.ai.search.util.Point;
 
 /**
  * @author Eric Fritz
  * @author Reed Johnson
  */
-public class SearchResult
+public class EuclidianDistance implements Heuristic
 {
-	private List<Point> path;
-	private int cost;
-
-	public SearchResult(List<Point> path, int cost)
+	@Override
+	public double heuristic(Point p, Point goal)
 	{
-		this.path = path;
-		this.cost = cost;
-	}
+		int xDiff = p.getX() - goal.getX();
+		int yDiff = p.getY() - goal.getY();
 
-
-	public List<Point> getPath()
-	{
-		return path;
-	}
-
-	public int getNumberNodesExpanded()
-	{
-		return cost;
+		return Math.sqrt(xDiff * xDiff + yDiff * yDiff);
 	}
 }

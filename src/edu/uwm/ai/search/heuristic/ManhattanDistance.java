@@ -20,13 +20,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
  */
 
-package edu.uwm.ai.search;
+package edu.uwm.ai.search.heuristic;
+
+import edu.uwm.ai.search.util.Point;
 
 /**
  * @author Eric Fritz
  * @author Reed Johnson
  */
-public interface SearchAlgorithm
+public class ManhattanDistance implements Heuristic
 {
-	public SearchResult search(Point initial, Point goal);
+	@Override
+	public double heuristic(Point p, Point goal)
+	{
+		return Math.abs(p.getX() - goal.getX()) + Math.abs(p.getY() - goal.getY());
+	}
 }

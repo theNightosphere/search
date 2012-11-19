@@ -24,6 +24,8 @@ package edu.uwm.ai.search;
 
 import java.util.Random;
 
+import edu.uwm.ai.search.util.Point;
+
 import processing.core.PApplet;
 
 /**

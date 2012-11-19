@@ -20,72 +20,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
  */
 
-package edu.uwm.ai.search;
+package edu.uwm.ai.search.heuristic;
+
+import edu.uwm.ai.search.util.Point;
 
 /**
  * @author Eric Fritz
  * @author Reed Johnson
  */
-public class Point
+public class DiagonalDistance implements Heuristic
 {
-	private int posX;
-	private int posY;
-
-	public Point(Point p)
-	{
-		this(p.getX(), p.getY());
-	}
-
-	public Point(int posX, int posY)
-	{
-		this.posX = posX;
-		this.posY = posY;
-	}
-
-	public int getX()
-	{
-		return posX;
-	}
-
-	public int getY()
-	{
-		return posY;
-	}
-
-	public void setX(int posX)
-	{
-		this.posX = posX;
-	}
-
-	public void setY(int posY)
-	{
-		this.posY = posY;
-	}
-
 	@Override
-	public int hashCode()
+	public double heuristic(Point p, Point goal)
 	{
-		return 31 * posX + posY;
-	}
+		int xDiff = p.getX() - goal.getX();
+		int yDiff = p.getY() - goal.getY();
 
-	@Override
-	public boolean equals(Object o)
-	{
-		if (o == this) {
-			return true;
-		}
-
-		if (o == null || !(o instanceof Point)) {
-			return false;
-		}
-
-		Point other = (Point) o;
-		return other.posX == posX && other.posY == posY;
-	}
-
-	@Override
-	public String toString()
-	{
-		return "(" + posX + ", " + posY + ")";
+		return Math.max(xDiff, yDiff);
 	}
 }

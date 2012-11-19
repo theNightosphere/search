@@ -20,13 +20,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
  */
 
-package edu.uwm.ai.search;
+package edu.uwm.ai.search.search;
+
+import edu.uwm.ai.search.util.Point;
 
 /**
  * @author Eric Fritz
  * @author Reed Johnson
  */
-public interface Heuristic
+public interface SearchAlgorithm
 {
-	public double heuristic(Point p, Point goal);
+	public SearchResult search(Point initial, Point goal);
 }

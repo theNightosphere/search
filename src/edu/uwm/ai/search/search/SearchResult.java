@@ -20,20 +20,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
  */
 
-package edu.uwm.ai.search;
+package edu.uwm.ai.search.search;
+
+import java.util.List;
+
+import edu.uwm.ai.search.util.Point;
 
 /**
  * @author Eric Fritz
  * @author Reed Johnson
  */
-public class DiagonalDistance implements Heuristic
+public class SearchResult
 {
-	@Override
-	public double heuristic(Point p, Point goal)
-	{
-		int xDiff = p.getX() - goal.getX();
-		int yDiff = p.getY() - goal.getY();
+	private List<Point> path;
+	private int cost;
 
-		return Math.max(xDiff, yDiff);
+	public SearchResult(List<Point> path, int cost)
+	{
+		this.path = path;
+		this.cost = cost;
+	}
+
+
+	public List<Point> getPath()
+	{
+		return path;
+	}
+
+	public int getNumberNodesExpanded()
+	{
+		return cost;
 	}
 }

@@ -20,8 +20,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
  */
 
-package edu.uwm.ai.search;
+package edu.uwm.ai.search.agent;
 
+import edu.uwm.ai.search.World;
+import edu.uwm.ai.search.util.Point;
 import processing.core.PApplet;
 
 /**

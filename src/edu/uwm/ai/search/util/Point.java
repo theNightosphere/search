@@ -20,17 +20,72 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
  */
 
-package edu.uwm.ai.search;
+package edu.uwm.ai.search.util;
 
 /**
  * @author Eric Fritz
  * @author Reed Johnson
  */
-public class ManhattanDistance implements Heuristic
+public class Point
 {
-	@Override
-	public double heuristic(Point p, Point goal)
+	private int posX;
+	private int posY;
+
+	public Point(Point p)
 	{
-		return Math.abs(p.getX() - goal.getX()) + Math.abs(p.getY() - goal.getY());
+		this(p.getX(), p.getY());
+	}
+
+	public Point(int posX, int posY)
+	{
+		this.posX = posX;
+		this.posY = posY;
+	}
+
+	public int getX()
+	{
+		return posX;
+	}
+
+	public int getY()
+	{
+		return posY;
+	}
+
+	public void setX(int posX)
+	{
+		this.posX = posX;
+	}
+
+	public void setY(int posY)
+	{
+		this.posY = posY;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return 31 * posX + posY;
+	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		if (o == this) {
+			return true;
+		}
+
+		if (o == null || !(o instanceof Point)) {
+			return false;
+		}
+
+		Point other = (Point) o;
+		return other.posX == posX && other.posY == posY;
+	}
+
+	@Override
+	public String toString()
+	{
+		return "(" + posX + ", " + posY + ")";
 	}
 }

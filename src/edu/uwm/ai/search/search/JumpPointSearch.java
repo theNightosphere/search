@@ -20,76 +20,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
  */
 
-package edu.uwm.ai.search;
+package edu.uwm.ai.search.search;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import edu.uwm.ai.search.World;
+import edu.uwm.ai.search.util.Point;
 
 /**
  * @author Eric Fritz
  * @author Reed Johnson
  */
-public class BreadthFirstSearch extends BaseSearchAlgorithm
+public class JumpPointSearch extends BaseSearchAlgorithm
 {
-	public BreadthFirstSearch(World w)
+	public JumpPointSearch(World w)
 	{
 		super(w);
 	}
 
 	@Override
-	public SearchResult search(Point initial, final Point goal)
+	public SearchResult search(Point initial, Point goal)
 	{
-		Map<Point, Point> pred = new HashMap<Point, Point>();
-		List<Point> successors = new ArrayList<Point>();
-
-		if (initial.equals(goal)) {
-			return new SearchResult(new ArrayList<Point>(), 0);
-		}
-
-		int cost = 0;
-		for (int depthLimit = 1; depthLimit < 100; depthLimit++) {
-			pred.clear();
-			successors.clear();
-
-			successors.add(initial);
-			pred.put(initial, null);
-
-			while (!successors.isEmpty()) {
-				cost++;
-				Point current = successors.remove(0);
-
-				for (Point successor : getSuccessors(current)) {
-					if (!hasKey(pred, successor)) {
-						pred.put(successor, current);
-						successors.add(successor);
-					}
-
-					if (successor.equals(goal)) {
-						return new SearchResult(backtrace(pred, successor), cost);
-					}
-				}
-			}
-		}
-
-		return new SearchResult(new ArrayList<Point>(), cost);
-	}
-
-	private boolean hasKey(Map<Point, Point> m, Point p)
-	{
-		for (Point a : m.keySet()) {
-			if (a.equals(p)) {
-				return true;
-			}
-		}
-
-		return false;
+		return new SearchResult(new ArrayList<Point>(), 0);
 	}
 
 	@Override
 	public String toString()
 	{
-		return "BFS";
+		return "JPS";
 	}
 }

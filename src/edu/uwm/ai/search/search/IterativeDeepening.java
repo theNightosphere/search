@@ -20,60 +20,62 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
  */
 
-package edu.uwm.ai.search;
+package edu.uwm.ai.search.search;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.PriorityQueue;
+
+import edu.uwm.ai.search.World;
+import edu.uwm.ai.search.util.Point;
 
 /**
  * @author Eric Fritz
  * @author Reed Johnson
  */
-public class AStarSearch extends BaseSearchAlgorithm
+public class IterativeDeepening extends BaseSearchAlgorithm
 {
-	private Heuristic h;
-
-	public AStarSearch(World w, Heuristic h)
+	public IterativeDeepening(World w)
 	{
 		super(w);
-		this.h = h;
 	}
 
 	@Override
-	public SearchResult search(Point initial, final Point goal)
+	public SearchResult search(Point initial, Point goal)
 	{
-		final Map<Point, Point> pred = new HashMap<Point, Point>();
+		Map<Point, Point> pred = new HashMap<Point, Point>();
+		List<WrappedPoint> successors = new ArrayList<WrappedPoint>();
 
-		PriorityQueue<Point> successors = new PriorityQueue<Point>(16, new Comparator<Point>() {
-			@Override
-			public int compare(Point o1, Point o2)
-			{
-				double h1 = h.heuristic(o1, goal) + backtrace(pred, o1).size();
-				double h2 = h.heuristic(o2, goal) + backtrace(pred, o2).size();
-
-				return (int) (h1 - h2);
-			}
-		});
-
-		successors.add(initial);
-		pred.put(initial, null);
+		if (initial.equals(goal)) {
+			return new SearchResult(new ArrayList<Point>(), 0);
+		}
 
 		int cost = 0;
-		while (!successors.isEmpty()) {
-			cost++;
-			Point current = successors.poll();
+		for (int depthLimit = 1; depthLimit < 100; depthLimit++) {
+			pred.clear();
+			successors.clear();
 
-			if (current.equals(goal)) {
-				return new SearchResult(backtrace(pred, current), cost);
-			}
+			successors.add(new WrappedPoint(initial, 0));
+			pred.put(initial, null);
 
-			for (Point successor : getSuccessors(current)) {
-				if (!hasKey(pred, successor)) {
-					pred.put(successor, current);
-					successors.add(successor);
+			while (!successors.isEmpty()) {
+				cost++;
+				WrappedPoint current = successors.remove(0);
+
+				if (current.depth > depthLimit) {
+					break;
+				}
+
+				for (Point successor : getSuccessors(current.p)) {
+					if (!hasKey(pred, successor)) {
+						pred.put(successor, current.p);
+						successors.add(new WrappedPoint(successor, current.depth + 1));
+					}
+
+					if (successor.equals(goal)) {
+						return new SearchResult(backtrace(pred, successor), cost);
+					}
 				}
 			}
 		}
@@ -95,6 +97,18 @@ public class AStarSearch extends BaseSearchAlgorithm
 	@Override
 	public String toString()
 	{
-		return "A*";
+		return "ID";
+	}
+
+	class WrappedPoint
+	{
+		public Point p;
+		public int depth;
+
+		public WrappedPoint(Point p, int depth)
+		{
+			this.p = p;
+			this.depth = depth;
+		}
 	}
 }
