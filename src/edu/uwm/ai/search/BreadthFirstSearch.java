@@ -23,18 +23,17 @@
 package edu.uwm.ai.search;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.PriorityQueue;
 
 /**
  * @author Eric Fritz
  * @author Reed Johnson
  */
-public class GreedySearch extends BaseSearchAlgorithm
+public class BreadthFirstSearch extends BaseSearchAlgorithm
 {
-	public GreedySearch(World w)
+	public BreadthFirstSearch(World w)
 	{
 		super(w);
 	}
@@ -43,33 +42,33 @@ public class GreedySearch extends BaseSearchAlgorithm
 	public SearchResult search(Point initial, final Point goal)
 	{
 		Map<Point, Point> pred = new HashMap<Point, Point>();
-		PriorityQueue<Point> successors = new PriorityQueue<Point>(16, new Comparator<Point>() {
-			@Override
-			public int compare(Point o1, Point o2)
-			{
-				double h1 = heuristic(o1, goal);
-				double h2 = heuristic(o2, goal);
+		List<Point> successors = new ArrayList<Point>();
 
-				return (int) (h1 - h2);
-			}
-		});
-
-		successors.add(initial);
-		pred.put(initial, null);
+		if (initial.equals(goal)) {
+			return new SearchResult(new ArrayList<Point>(), 0);
+		}
 
 		int cost = 0;
-		while (!successors.isEmpty()) {
-			cost++;
-			Point current = successors.poll();
+		for (int depthLimit = 1; depthLimit < 100; depthLimit++) {
+			pred.clear();
+			successors.clear();
 
-			if (current.equals(goal)) {
-				return new SearchResult(backtrace(pred, current), cost);
-			}
+			successors.add(initial);
+			pred.put(initial, null);
 
-			for (Point successor : getSuccessors(current)) {
-				if (!hasKey(pred, successor)) {
-					pred.put(successor, current);
-					successors.add(successor);
+			while (!successors.isEmpty()) {
+				cost++;
+				Point current = successors.remove(0);
+
+				for (Point successor : getSuccessors(current)) {
+					if (!hasKey(pred, successor)) {
+						pred.put(successor, current);
+						successors.add(successor);
+					}
+
+					if (successor.equals(goal)) {
+						return new SearchResult(backtrace(pred, successor), cost);
+					}
 				}
 			}
 		}
@@ -88,14 +87,9 @@ public class GreedySearch extends BaseSearchAlgorithm
 		return false;
 	}
 
-	private double heuristic(Point p, Point goal)
-	{
-		return Math.abs(p.getX() - goal.getX()) + Math.abs(p.getY() - goal.getY());
-	}
-
 	@Override
 	public String toString()
 	{
-		return "GS";
+		return "BFS";
 	}
 }
