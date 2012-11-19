@@ -120,7 +120,7 @@ public class World
 		boolean ob1 = isValidPosition(new Point(origin.getX() + xDist, origin.getY()));
 		boolean ob2 = isValidPosition(new Point(origin.getX(), origin.getY() + yDist));
 
-		return ob1 && ob2;
+		return ob1 || ob2;
 	}
 
 	public boolean hasObstacle(Point p)
