@@ -54,6 +54,11 @@ abstract public class BaseSearchAlgorithm implements SearchAlgorithm
 		Point p3 = new Point(p.getX() - 1, p.getY() + 0);
 		Point p4 = new Point(p.getX() + 1, p.getY() + 0);
 
+		Point p5 = new Point(p.getX() + 1, p.getY() + 1);
+		Point p6 = new Point(p.getX() + 1, p.getY() - 1);
+		Point p7 = new Point(p.getX() - 1, p.getY() + 1);
+		Point p8 = new Point(p.getX() - 1, p.getY() - 1);
+
 		if (w.isValidPosition(p1))
 			successors.add(p1);
 		if (w.isValidPosition(p2))
@@ -62,6 +67,15 @@ abstract public class BaseSearchAlgorithm implements SearchAlgorithm
 			successors.add(p3);
 		if (w.isValidPosition(p4))
 			successors.add(p4);
+
+		if (w.isValidPosition(p5) && w.isAccessableThrough(p5, p))
+			successors.add(p5);
+		if (w.isValidPosition(p6) && w.isAccessableThrough(p6, p))
+			successors.add(p6);
+		if (w.isValidPosition(p7) && w.isAccessableThrough(p7, p))
+			successors.add(p7);
+		if (w.isValidPosition(p8) && w.isAccessableThrough(p8, p))
+			successors.add(p8);
 
 		return successors;
 	}

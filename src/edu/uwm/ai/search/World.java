@@ -93,6 +93,34 @@ public class World
 		return i >= 0 && j >= 0 && i < w && j < h && !hasObstacle(i, j);
 	}
 
+	public boolean isAccessableThrough(Point dest, Point origin)
+	{
+		if (!isValidPosition(dest) || !isValidPosition(origin)) {
+			throw new IllegalArgumentException("Points are not valid.");
+		}
+
+		int xDist = Math.abs(dest.getX() - origin.getX());
+		int yDist = Math.abs(dest.getY() - origin.getY());
+
+		if (xDist > 1 || yDist > 1) {
+			throw new IllegalArgumentException("Points are not adjacent.");
+		}
+
+		// If points are touching there cannot be an obstacle between them.
+
+		if ((xDist == 0 && yDist == 1) || (xDist == 1 && yDist == 0)) {
+			return true;
+		}
+
+		// Otherwise ensure that the diagonal move doesn't go through a corner where two separate
+		// walls are joined.
+
+		boolean ob1 = isValidPosition(new Point(origin.getX() + xDist, origin.getY()));
+		boolean ob2 = isValidPosition(new Point(origin.getX(), origin.getY() + yDist));
+
+		return ob1 && ob2;
+	}
+
 	public boolean hasObstacle(Point p)
 	{
 		return hasObstacle(p.getX(), p.getY());
