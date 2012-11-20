@@ -36,9 +36,11 @@ import edu.uwm.ai.search.util.Point;
  */
 public class BreadthFirstSearch extends BaseSearchAlgorithm
 {
+	private World w;
+
 	public BreadthFirstSearch(World w)
 	{
-		super(w);
+		this.w = w;
 	}
 
 	@Override
@@ -63,7 +65,7 @@ public class BreadthFirstSearch extends BaseSearchAlgorithm
 				cost++;
 				Point current = successors.remove(0);
 
-				for (Point successor : getSuccessors(current)) {
+				for (Point successor : w.getSuccessors(current)) {
 					if (!hasKey(pred, successor)) {
 						pred.put(successor, current);
 						successors.add(successor);

@@ -22,12 +22,10 @@
 
 package edu.uwm.ai.search.search;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import edu.uwm.ai.search.World;
 import edu.uwm.ai.search.util.Point;
 
 /**
@@ -36,53 +34,6 @@ import edu.uwm.ai.search.util.Point;
  */
 abstract public class BaseSearchAlgorithm implements SearchAlgorithm
 {
-	private World w;
-
-	public BaseSearchAlgorithm(World w)
-	{
-		this.w = w;
-	}
-
-	public World getWorld()
-	{
-		return w;
-	}
-
-	List<Point> getSuccessors(Point p)
-	{
-		List<Point> successors = new ArrayList<Point>();
-
-		Point p1 = new Point(p.getX() + 0, p.getY() - 1);
-		Point p2 = new Point(p.getX() + 0, p.getY() + 1);
-		Point p3 = new Point(p.getX() - 1, p.getY() + 0);
-		Point p4 = new Point(p.getX() + 1, p.getY() + 0);
-
-		Point p5 = new Point(p.getX() + 1, p.getY() + 1);
-		Point p6 = new Point(p.getX() + 1, p.getY() - 1);
-		Point p7 = new Point(p.getX() - 1, p.getY() + 1);
-		Point p8 = new Point(p.getX() - 1, p.getY() - 1);
-
-		if (w.isValidPosition(p1))
-			successors.add(p1);
-		if (w.isValidPosition(p2))
-			successors.add(p2);
-		if (w.isValidPosition(p3))
-			successors.add(p3);
-		if (w.isValidPosition(p4))
-			successors.add(p4);
-
-		if (w.isValidPosition(p5) && w.isAccessableThrough(p5, p))
-			successors.add(p5);
-		if (w.isValidPosition(p6) && w.isAccessableThrough(p6, p))
-			successors.add(p6);
-		if (w.isValidPosition(p7) && w.isAccessableThrough(p7, p))
-			successors.add(p7);
-		if (w.isValidPosition(p8) && w.isAccessableThrough(p8, p))
-			successors.add(p8);
-
-		return successors;
-	}
-
 	List<Point> backtrace(Map<Point, Point> predecessors, Point p)
 	{
 		List<Point> path = new LinkedList<Point>();

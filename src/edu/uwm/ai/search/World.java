@@ -22,11 +22,12 @@
 
 package edu.uwm.ai.search;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
-import edu.uwm.ai.search.util.Point;
-
 import processing.core.PApplet;
+import edu.uwm.ai.search.util.Point;
 
 /**
  * @author Eric Fritz
@@ -121,6 +122,41 @@ public class World
 		boolean ob2 = isValidPosition(new Point(origin.getX(), origin.getY() + yDist));
 
 		return ob1 || ob2;
+	}
+
+	public List<Point> getSuccessors(Point p)
+	{
+		List<Point> successors = new ArrayList<Point>(8);
+
+		Point p1 = new Point(p.getX() + 0, p.getY() - 1);
+		Point p2 = new Point(p.getX() + 0, p.getY() + 1);
+		Point p3 = new Point(p.getX() - 1, p.getY() + 0);
+		Point p4 = new Point(p.getX() + 1, p.getY() + 0);
+
+		Point p5 = new Point(p.getX() + 1, p.getY() + 1);
+		Point p6 = new Point(p.getX() + 1, p.getY() - 1);
+		Point p7 = new Point(p.getX() - 1, p.getY() + 1);
+		Point p8 = new Point(p.getX() - 1, p.getY() - 1);
+
+		if (isValidPosition(p1))
+			successors.add(p1);
+		if (isValidPosition(p2))
+			successors.add(p2);
+		if (isValidPosition(p3))
+			successors.add(p3);
+		if (isValidPosition(p4))
+			successors.add(p4);
+
+		if (isValidPosition(p5) && isAccessableThrough(p5, p))
+			successors.add(p5);
+		if (isValidPosition(p6) && isAccessableThrough(p6, p))
+			successors.add(p6);
+		if (isValidPosition(p7) && isAccessableThrough(p7, p))
+			successors.add(p7);
+		if (isValidPosition(p8) && isAccessableThrough(p8, p))
+			successors.add(p8);
+
+		return successors;
 	}
 
 	public boolean hasObstacle(Point p)

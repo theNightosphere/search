@@ -25,6 +25,7 @@ package edu.uwm.ai.search.search;
 import java.util.ArrayList;
 
 import edu.uwm.ai.search.World;
+import edu.uwm.ai.search.heuristic.Heuristic;
 import edu.uwm.ai.search.util.Point;
 
 /**
@@ -34,8 +35,11 @@ import edu.uwm.ai.search.util.Point;
 public class JumpPointSearch extends BaseSearchAlgorithm
 {
 	public JumpPointSearch(World w)
+	private World w;
+	private Heuristic h;
+
 	{
-		super(w);
+		this.w = w;
 	}
 
 	@Override

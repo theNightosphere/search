@@ -38,11 +38,12 @@ import edu.uwm.ai.search.util.Point;
  */
 public class AStarSearch extends BaseSearchAlgorithm
 {
+	private World w;
 	private Heuristic h;
 
 	public AStarSearch(World w, Heuristic h)
 	{
-		super(w);
+		this.w = w;
 		this.h = h;
 	}
 
@@ -74,7 +75,7 @@ public class AStarSearch extends BaseSearchAlgorithm
 				return new SearchResult(backtrace(pred, current), cost);
 			}
 
-			for (Point successor : getSuccessors(current)) {
+			for (Point successor : w.getSuccessors(current)) {
 				if (!hasKey(pred, successor)) {
 					pred.put(successor, current);
 					successors.add(successor);

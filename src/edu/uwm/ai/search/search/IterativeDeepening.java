@@ -36,9 +36,11 @@ import edu.uwm.ai.search.util.Point;
  */
 public class IterativeDeepening extends BaseSearchAlgorithm
 {
+	private World w;
+
 	public IterativeDeepening(World w)
 	{
-		super(w);
+		this.w = w;
 	}
 
 	@Override
@@ -67,7 +69,7 @@ public class IterativeDeepening extends BaseSearchAlgorithm
 					break;
 				}
 
-				for (Point successor : getSuccessors(current.p)) {
+				for (Point successor : w.getSuccessors(current.p)) {
 					if (!hasKey(pred, successor)) {
 						pred.put(successor, current.p);
 						successors.add(new WrappedPoint(successor, current.depth + 1));
