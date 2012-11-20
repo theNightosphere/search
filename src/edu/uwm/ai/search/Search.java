@@ -111,15 +111,13 @@ public class Search extends PApplet
 		}
 	}
 
-	/*public static void main(String args[])
-	{
-		JFrame menuFrame = new JFrame("Heuristic Search Comparison");
-		menuFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		PApplet mainP = new PApplet();
 		PApplet.main(new String[] { "--present", "edu.uwm.ai.search.Search" });
-		menuFrame.add(mainP);
 		mainP.init();
-		menuFrame.pack();
-		menuFrame.setVisible(true);
-	}*/
+	/*
+	 * public static void main(String args[]) { JFrame menuFrame = new
+	 * JFrame("Heuristic Search Comparison");
+	 * menuFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); PApplet mainP = new PApplet();
+	 * PApplet.main(new String[] { "--present", "edu.uwm.ai.search.Search" }); menuFrame.add(mainP);
+	 * mainP.init(); menuFrame.pack(); menuFrame.setVisible(true); }
+	 */
 }
