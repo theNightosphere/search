@@ -28,7 +28,7 @@ import edu.uwm.ai.search.util.Point;
  * @author Eric Fritz
  * @author Reed Johnson
  */
-public class DiagonalDistance implements Heuristic
+public class ChebyshevDistance implements Heuristic
 {
 	@Override
 	public double heuristic(Point p, Point goal)
