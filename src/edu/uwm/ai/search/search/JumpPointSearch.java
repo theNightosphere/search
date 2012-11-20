@@ -34,12 +34,13 @@ import edu.uwm.ai.search.util.Point;
  */
 public class JumpPointSearch extends BaseSearchAlgorithm
 {
-	public JumpPointSearch(World w)
 	private World w;
 	private Heuristic h;
 
+	public JumpPointSearch(World w, Heuristic h)
 	{
 		this.w = w;
+		this.h = h;
 	}
 
 	@Override
