@@ -22,42 +22,37 @@
 package edu.uwm.ai.search;
 
 import java.awt.Dimension;
+
 import javax.swing.JFrame;
 
-
-@SuppressWarnings("serial")
 /**
  * The JFrame that contains the program.
+ * 
  * @author Reed Johnson
  * @author Eric Fritz
  * @date 11.19.2012
  */
-public class SearchController extends JFrame {
-
+@SuppressWarnings("serial")
+public class SearchController extends JFrame
+{
 	public SearchController()
 	{
 		setTitle("Heuristic Search Comparison");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
+
 		Search s = new Search();
 		s.init();
-		
 		add(s);
-		
-		
-		
+
 	}
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
+
+	public static void main(String[] args)
+	{
 		SearchController sc = new SearchController();
 		sc.pack();
-		sc.setMinimumSize(new Dimension(Search.displayWidth+15, Search.displayHeight+100));
+		sc.setMinimumSize(new Dimension(Search.displayWidth + 15, Search.displayHeight + 100));
 		sc.setLocationRelativeTo(null);
 		sc.setVisible(true);
-		
-		
 
 	}
-
 }
