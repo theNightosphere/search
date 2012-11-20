@@ -110,8 +110,6 @@ public class Search extends PApplet
 		}
 	}
 
-		PApplet.main(new String[] { "--present", "edu.uwm.ai.search.Search" });
-		mainP.init();
 	/*
 	 * public static void main(String args[]) { JFrame menuFrame = new
 	 * JFrame("Heuristic Search Comparison");
