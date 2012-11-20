@@ -25,6 +25,7 @@ package edu.uwm.ai.search;
 import java.util.ArrayList;
 import java.util.List;
 
+import processing.core.PApplet;
 import edu.uwm.ai.search.agent.PlayerEntity;
 import edu.uwm.ai.search.agent.SearchEntity;
 import edu.uwm.ai.search.heuristic.ManhattanDistance;
@@ -32,8 +33,6 @@ import edu.uwm.ai.search.search.AStarSearch;
 import edu.uwm.ai.search.search.BreadthFirstSearch;
 import edu.uwm.ai.search.search.IterativeDeepening;
 import edu.uwm.ai.search.search.JumpPointSearch;
-
-import processing.core.PApplet;
 
 /**
  * @author Eric Fritz
