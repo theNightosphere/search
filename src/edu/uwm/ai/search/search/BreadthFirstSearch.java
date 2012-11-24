@@ -36,13 +36,9 @@ import edu.uwm.ai.search.util.Point;
  */
 public class BreadthFirstSearch extends BaseSearchAlgorithm
 {
-	private World w;
-
 	public BreadthFirstSearch(World w)
 	{
 		super(w);
-
-		this.w = w;
 	}
 
 	@Override

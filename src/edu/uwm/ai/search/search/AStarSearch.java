@@ -41,14 +41,12 @@ import edu.uwm.ai.search.util.Point;
  */
 public class AStarSearch extends BaseSearchAlgorithm
 {
-	private World w;
 	private Heuristic h;
 
 	public AStarSearch(World w, Heuristic h)
 	{
 		super(w);
 
-		this.w = w;
 		this.h = h;
 	}
 

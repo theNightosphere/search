@@ -36,13 +36,9 @@ import edu.uwm.ai.search.util.Point;
  */
 public class IterativeDeepening extends BaseSearchAlgorithm
 {
-	private World w;
-
 	public IterativeDeepening(World w)
 	{
 		super(w);
-
-		this.w = w;
 	}
 
 	@Override
