@@ -157,7 +157,14 @@ public class JumpPointSearch extends BaseSearchAlgorithm
 			Point jump = jump(n.getX(), n.getY(), p.getX(), p.getY(), goal);
 
 			if (jump != null) {
-				nodes.add(new Node(jump, 0, 1)); // TODO - how to do path cost?
+				int dx = Math.abs(jump.getX() - p.getX());
+				int dy = Math.abs(jump.getY() - p.getY());
+
+				if (dx != 0 && dy != 0) {
+					nodes.add(new Node(jump, 0, dx * Math.sqrt(2)));
+				} else {
+					nodes.add(new Node(jump, 0, dx + dy));
+				}
 			}
 		}
 
@@ -284,8 +291,6 @@ public class JumpPointSearch extends BaseSearchAlgorithm
 		pruneInvalid(successors, p);
 		return successors;
 	}
-
-	// TODO - move this into whatever
 
 	private void pruneInvalid(List<Node> nodes, Node p)
 	{
