@@ -37,6 +37,8 @@ import edu.uwm.ai.search.util.Point;
  */
 abstract public class BaseSearchAlgorithm implements SearchAlgorithm
 {
+	public static double diagCost = 2;
+
 	private World w;
 
 	public BaseSearchAlgorithm(World w)
@@ -59,36 +61,28 @@ abstract public class BaseSearchAlgorithm implements SearchAlgorithm
 	List<Node> getSuccessors(Point p)
 	{
 		List<Node> successors = new ArrayList<Node>(8);
+		successors.add(new Node(p.getX() + 0, p.getY() - 1, 0, 1));
+		successors.add(new Node(p.getX() + 0, p.getY() + 1, 0, 1));
+		successors.add(new Node(p.getX() - 1, p.getY() + 0, 0, 1));
+		successors.add(new Node(p.getX() + 1, p.getY() + 0, 0, 1));
+		successors.add(new Node(p.getX() + 1, p.getY() + 1, 0, diagCost));
+		successors.add(new Node(p.getX() + 1, p.getY() - 1, 0, diagCost));
+		successors.add(new Node(p.getX() - 1, p.getY() + 1, 0, diagCost));
+		successors.add(new Node(p.getX() - 1, p.getY() - 1, 0, diagCost));
 
-		Node n1 = new Node(p.getX() + 0, p.getY() - 1, 0, 1);
-		Node n2 = new Node(p.getX() + 0, p.getY() + 1, 0, 1);
-		Node n3 = new Node(p.getX() - 1, p.getY() + 0, 0, 1);
-		Node n4 = new Node(p.getX() + 1, p.getY() + 0, 0, 1);
+		return pruneInvalid(successors, p);
+	}
 
-		double diagCost = Math.sqrt(2);
-		Node n5 = new Node(p.getX() + 1, p.getY() + 1, 0, diagCost);
-		Node n6 = new Node(p.getX() + 1, p.getY() - 1, 0, diagCost);
-		Node n7 = new Node(p.getX() - 1, p.getY() + 1, 0, diagCost);
-		Node n8 = new Node(p.getX() - 1, p.getY() - 1, 0, diagCost);
+	List<Node> pruneInvalid(List<Node> nodes, Point p)
+	{
+		List<Node> newNodes = new ArrayList<Node>();
 
-		if (w.isValidPosition(n1))
-			successors.add(n1);
-		if (w.isValidPosition(n2))
-			successors.add(n2);
-		if (w.isValidPosition(n3))
-			successors.add(n3);
-		if (w.isValidPosition(n4))
-			successors.add(n4);
+		for (Node n : nodes) {
+			if (w.isValidPosition(n) && (n.getX() == p.getX() || n.getY() == p.getY() || w.isAccessableThrough(n, p))) {
+				newNodes.add(n);
+			}
+		}
 
-		if (w.isValidPosition(n5) && w.isAccessableThrough(n5, p))
-			successors.add(n5);
-		if (w.isValidPosition(n6) && w.isAccessableThrough(n6, p))
-			successors.add(n6);
-		if (w.isValidPosition(n7) && w.isAccessableThrough(n7, p))
-			successors.add(n7);
-		if (w.isValidPosition(n8) && w.isAccessableThrough(n8, p))
-			successors.add(n8);
-
-		return successors;
+		return newNodes;
 	}
 }

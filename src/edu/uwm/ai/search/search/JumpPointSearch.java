@@ -25,7 +25,6 @@ package edu.uwm.ai.search.search;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -112,22 +111,15 @@ public class JumpPointSearch extends BaseSearchAlgorithm
 			Node a = path.get(i - 1);
 			Node b = path.get(i - 0);
 
-			int dx = b.getX() - a.getX();
-			int dy = b.getY() - a.getY();
+			int dx = (b.getX() - a.getX()) / Math.max(Math.abs(b.getX() - a.getX()), 1);
+			int dy = (b.getY() - a.getY()) / Math.max(Math.abs(b.getY() - a.getY()), 1);
 
-			if (Math.abs(dx) < 1 && Math.abs(dy) < 1) {
-				nodes.add(a);
-			} else {
-				dx = (b.getX() - a.getX()) / Math.max(Math.abs(b.getX() - a.getX()), 1);
-				dy = (b.getY() - a.getY()) / Math.max(Math.abs(b.getY() - a.getY()), 1);
+			Point p = a;
 
-				Point p = a;
-
-				do {
-					nodes.add(p);
-					p = new Point(p.getX() + dx, p.getY() + dy);
-				} while (!p.equals(b));
-			}
+			do {
+				nodes.add(p);
+				p = new Point(p.getX() + dx, p.getY() + dy);
+			} while (!p.equals(b));
 		}
 
 		nodes.add(path.get(path.size() - 1));
@@ -218,92 +210,43 @@ public class JumpPointSearch extends BaseSearchAlgorithm
 	{
 		List<Node> successors = new ArrayList<Node>(8);
 
-		double diagCost = Math.sqrt(2);
-
 		if (px != null) {
 			int dx = (p.getX() - px.getX()) / Math.max(Math.abs(p.getX() - px.getX()), 1);
 			int dy = (p.getY() - px.getY()) / Math.max(Math.abs(p.getY() - px.getY()), 1);
 
 			if (dx != 0 && dy != 0) {
-				if (w.isValidPosition(p.getX(), p.getY() + dy))
-					successors.add(new Node(p.getX(), p.getY() + dy, 0, 1));
-				if (w.isValidPosition(p.getX() + dx, p.getY()))
-					successors.add(new Node(p.getX() + dx, p.getY(), 0, 1));
-				if (w.isValidPosition(p.getX(), p.getY() + dy) || w.isValidPosition(p.getX() + dx, p.getY()))
-					successors.add(new Node(p.getX() + dx, p.getY() + dy, 0, diagCost));
-				if (!w.isValidPosition(p.getX() - dx, p.getY()) && w.isValidPosition(p.getX(), p.getY() + dy))
-					successors.add(new Node(p.getX() - dx, p.getY() + dy, 0, diagCost));
-				if (!w.isValidPosition(p.getX(), p.getY() - dy) && w.isValidPosition(p.getX() + dx, p.getY()))
-					successors.add(new Node(p.getX() + dx, p.getY() - dy, 0, diagCost));
+				successors.add(new Node(p.getX() + +0, p.getY() + dy, 0, 1));
+				successors.add(new Node(p.getX() + dx, p.getY() + +0, 0, 1));
+				successors.add(new Node(p.getX() + dx, p.getY() + dy, 0, diagCost));
+				successors.add(new Node(p.getX() - dx, p.getY() + dy, 0, diagCost));
+				successors.add(new Node(p.getX() + dx, p.getY() - dy, 0, diagCost));
 			} else {
 				if (dx == 0) {
 					if (w.isValidPosition(p.getX(), p.getY() + dy)) {
-						if (w.isValidPosition(p.getX(), p.getY() + dy))
-							successors.add(new Node(p.getX(), p.getY() + dy, 0, 1));
-						if (!w.isValidPosition(p.getX() + 1, p.getY()))
-							successors.add(new Node(p.getX() + 1, p.getY() + dy, 0, diagCost));
-						if (!w.isValidPosition(p.getX() - 1, p.getY()))
-							successors.add(new Node(p.getX() - 1, p.getY() + dy, 0, diagCost));
+						successors.add(new Node(p.getX() + 0, p.getY() + dy, 0, 1));
+						successors.add(new Node(p.getX() + 1, p.getY() + dy, 0, diagCost));
+						successors.add(new Node(p.getX() - 1, p.getY() + dy, 0, diagCost));
 					}
 				} else {
 					if (w.isValidPosition(p.getX() + dx, p.getY())) {
-						if (w.isValidPosition(p.getX() + dx, p.getY()))
-							successors.add(new Node(p.getX() + dx, p.getY(), 0, 1));
-						if (!w.isValidPosition(p.getX(), p.getY() + 1))
-							successors.add(new Node(p.getX() + dx, p.getY() + 1, 0, diagCost));
-						if (!w.isValidPosition(p.getX(), p.getY() - 1))
-							successors.add(new Node(p.getX() + dx, p.getY() - 1, 0, diagCost));
+						successors.add(new Node(p.getX() + dx, p.getY() + 0, 0, 1));
+						successors.add(new Node(p.getX() + dx, p.getY() + 1, 0, diagCost));
+						successors.add(new Node(p.getX() + dx, p.getY() - 1, 0, diagCost));
 					}
 				}
 			}
 		} else {
-			Node n1 = new Node(p.getX() + 0, p.getY() - 1, 0, 1);
-			Node n2 = new Node(p.getX() + 0, p.getY() + 1, 0, 1);
-			Node n3 = new Node(p.getX() - 1, p.getY() + 0, 0, 1);
-			Node n4 = new Node(p.getX() + 1, p.getY() + 0, 0, 1);
-
-			Node n5 = new Node(p.getX() + 1, p.getY() + 1, 0, diagCost);
-			Node n6 = new Node(p.getX() + 1, p.getY() - 1, 0, diagCost);
-			Node n7 = new Node(p.getX() - 1, p.getY() + 1, 0, diagCost);
-			Node n8 = new Node(p.getX() - 1, p.getY() - 1, 0, diagCost);
-
-			if (w.isValidPosition(n1))
-				successors.add(n1);
-			if (w.isValidPosition(n2))
-				successors.add(n2);
-			if (w.isValidPosition(n3))
-				successors.add(n3);
-			if (w.isValidPosition(n4))
-				successors.add(n4);
-
-			if (w.isValidPosition(n5) && w.isAccessableThrough(n5, p))
-				successors.add(n5);
-			if (w.isValidPosition(n6) && w.isAccessableThrough(n6, p))
-				successors.add(n6);
-			if (w.isValidPosition(n7) && w.isAccessableThrough(n7, p))
-				successors.add(n7);
-			if (w.isValidPosition(n8) && w.isAccessableThrough(n8, p))
-				successors.add(n8);
+			successors.add(new Node(p.getX() + 0, p.getY() - 1, 0, 1));
+			successors.add(new Node(p.getX() + 0, p.getY() + 1, 0, 1));
+			successors.add(new Node(p.getX() - 1, p.getY() + 0, 0, 1));
+			successors.add(new Node(p.getX() + 1, p.getY() + 0, 0, 1));
+			successors.add(new Node(p.getX() + 1, p.getY() + 1, 0, diagCost));
+			successors.add(new Node(p.getX() + 1, p.getY() - 1, 0, diagCost));
+			successors.add(new Node(p.getX() - 1, p.getY() + 1, 0, diagCost));
+			successors.add(new Node(p.getX() - 1, p.getY() - 1, 0, diagCost));
 		}
 
-		pruneInvalid(successors, p);
-		return successors;
-	}
-
-	private void pruneInvalid(List<Node> nodes, Node p)
-	{
-		Iterator<Node> itr = nodes.iterator();
-		while (itr.hasNext()) {
-			Node n = itr.next();
-
-			if (!w.isValidPosition(n)) {
-				itr.remove();
-			} else if (n.getX() != p.getX() && n.getY() != p.getY()) {
-				if (!w.isAccessableThrough(n, p)) {
-					itr.remove();
-				}
-			}
-		}
+		return pruneInvalid(successors, p);
 	}
 
 	private boolean hasKey(Map<Node, Node> m, Node p)
