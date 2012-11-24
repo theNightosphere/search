@@ -62,18 +62,16 @@ public class JumpPointSearch extends BaseSearchAlgorithm
 			@Override
 			public int compare(Node o1, Node o2)
 			{
-				int s1 = 0;
+				double h1 = o1.getCost();
+				double h2 = o2.getCost();
+
 				for (Node n : backtrace(pred, o1)) {
-					s1 += n.getPathCost();
+					h1 += n.getPathCost();
 				}
 
-				int s2 = 0;
 				for (Node n : backtrace(pred, o2)) {
-					s2 += n.getPathCost();
+					h2 += n.getPathCost();
 				}
-
-				double h1 = o1.getCost() + s1;
-				double h2 = o2.getCost() + s2;
 
 				return (int) (h1 - h2);
 			}
