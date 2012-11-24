@@ -99,6 +99,7 @@ public class SearchEntity extends Entity
 	public void update()
 	{
 		if (getPoint().equals(e.getPoint())) {
+			path.clear();
 			return;
 		}
 
