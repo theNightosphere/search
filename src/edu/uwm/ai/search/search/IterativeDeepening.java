@@ -40,6 +40,8 @@ public class IterativeDeepening extends BaseSearchAlgorithm
 
 	public IterativeDeepening(World w)
 	{
+		super(w);
+
 		this.w = w;
 	}
 
@@ -69,7 +71,7 @@ public class IterativeDeepening extends BaseSearchAlgorithm
 					break;
 				}
 
-				for (Point successor : w.getSuccessors(current.p)) {
+				for (Point successor : getSuccessors(current.p)) {
 					if (!hasKey(pred, successor)) {
 						pred.put(successor, current.p);
 						successors.add(new WrappedPoint(successor, current.depth + 1));

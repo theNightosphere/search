@@ -25,11 +25,14 @@ package edu.uwm.ai.search.search;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 
 import edu.uwm.ai.search.World;
 import edu.uwm.ai.search.heuristic.Heuristic;
+import edu.uwm.ai.search.util.Node;
 import edu.uwm.ai.search.util.Point;
 
 /**
@@ -43,6 +46,8 @@ public class AStarSearch extends BaseSearchAlgorithm
 
 	public AStarSearch(World w, Heuristic h)
 	{
+		super(w);
+
 		this.w = w;
 		this.h = h;
 	}
@@ -50,33 +55,47 @@ public class AStarSearch extends BaseSearchAlgorithm
 	@Override
 	public SearchResult search(Point initial, final Point goal)
 	{
-		final Map<Point, Point> pred = new HashMap<Point, Point>();
+		final Map<Node, Node> pred = new HashMap<Node, Node>();
 
-		PriorityQueue<Point> successors = new PriorityQueue<Point>(16, new Comparator<Point>() {
+		PriorityQueue<Node> successors = new PriorityQueue<Node>(16, new Comparator<Node>() {
 			@Override
-			public int compare(Point o1, Point o2)
+			public int compare(Node o1, Node o2)
 			{
-				double h1 = h.heuristic(o1, goal) + backtrace(pred, o1).size();
-				double h2 = h.heuristic(o2, goal) + backtrace(pred, o2).size();
+				int s1 = 0;
+				for (Node n : backtrace(pred, o1)) {
+					s1 += n.getPathCost();
+				}
+
+				int s2 = 0;
+				for (Node n : backtrace(pred, o2)) {
+					s2 += n.getPathCost();
+				}
+
+				double h1 = o1.getCost() + s1;
+				double h2 = o2.getCost() + s2;
 
 				return (int) (h1 - h2);
 			}
 		});
 
-		successors.add(initial);
-		pred.put(initial, null);
+		Node init = new Node(initial, h.heuristic(initial, goal), 0);
+
+		successors.add(init);
+		pred.put(init, null);
 
 		int cost = 0;
 		while (!successors.isEmpty()) {
 			cost++;
-			Point current = successors.poll();
+			Node current = successors.poll();
 
 			if (current.equals(goal)) {
-				return new SearchResult(backtrace(pred, current), cost);
+				return new SearchResult(new ArrayList<Point>(backtrace(pred, current)), cost);
 			}
 
-			for (Point successor : w.getSuccessors(current)) {
+			for (Node successor : getSuccessors(current)) {
 				if (!hasKey(pred, successor)) {
+					successor.setCost(h.heuristic(successor, goal));
+
 					pred.put(successor, current);
 					successors.add(successor);
 				}
@@ -86,9 +105,21 @@ public class AStarSearch extends BaseSearchAlgorithm
 		return new SearchResult(new ArrayList<Point>(), cost);
 	}
 
-	private boolean hasKey(Map<Point, Point> m, Point p)
+	List<Node> backtrace(Map<Node, Node> predecessors, Node p)
 	{
-		for (Point a : m.keySet()) {
+		List<Node> path = new LinkedList<Node>();
+
+		while (p != null) {
+			path.add(0, p);
+			p = predecessors.get(p);
+		}
+
+		return path;
+	}
+
+	private boolean hasKey(Map<Node, Node> m, Node p)
+	{
+		for (Node a : m.keySet()) {
 			if (a.equals(p)) {
 				return true;
 			}
