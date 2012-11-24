@@ -24,12 +24,11 @@ package edu.uwm.ai.search.agent;
 
 import java.util.List;
 
+import processing.core.PApplet;
 import edu.uwm.ai.search.World;
 import edu.uwm.ai.search.search.SearchAlgorithm;
 import edu.uwm.ai.search.search.SearchResult;
 import edu.uwm.ai.search.util.Point;
-
-import processing.core.PApplet;
 
 /**
  * @author Eric Fritz
@@ -94,7 +93,7 @@ public class SearchEntity extends Entity
 
 	public String getResults()
 	{
-		return String.format("[%3s] %8.2fms (%8.2fms total, %8.2fms avg), %6d nodes expanded (%6d total, %6d avg)", algorithm, pTime, tTime, totalSearches == 0 ? 0 : (tTime / totalSearches), pCost, tCost, totalSearches == 0 ? 0 : (tCost / totalSearches));
+		return String.format("[%3s] %8.2fms, %8.2fms total, %8.2fms avg, %6d nodes expanded, %6d total, %6d avg", algorithm, pTime, tTime, totalSearches == 0 ? 0 : (tTime / totalSearches), pCost, tCost, totalSearches == 0 ? 0 : (tCost / totalSearches));
 	}
 
 	public void update()
