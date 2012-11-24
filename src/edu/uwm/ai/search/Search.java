@@ -47,6 +47,7 @@ public class Search extends PApplet
 
 	private World world;
 	private PlayerEntity player;
+	private boolean chasing = true;
 
 	private List<SearchEntity> entities = new ArrayList<SearchEntity>();
 
@@ -67,6 +68,10 @@ public class Search extends PApplet
 	@Override
 	public void keyPressed()
 	{
+		if (keyCode == 32) {
+			chasing = !chasing;
+		}
+
 		player.update(keyCode);
 	}
 
@@ -101,7 +106,7 @@ public class Search extends PApplet
 	{
 		long now = System.currentTimeMillis();
 
-		if (now - 250 > last) {
+		if (now - 250 > last && chasing) {
 			last = now;
 
 			for (SearchEntity e : entities) {
