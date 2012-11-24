@@ -90,7 +90,7 @@ public class JumpPointSearch extends BaseSearchAlgorithm
 			Node current = successors.poll();
 
 			if (current.equals(goal)) {
-				return new SearchResult(new ArrayList<Point>(backtrace(pred, current)), cost);
+				return new SearchResult(fill(backtrace(pred, current)), cost);
 			}
 
 			for (Node successor : getSuccessors(current, pred.get(current), pred, goal)) {
@@ -104,6 +104,37 @@ public class JumpPointSearch extends BaseSearchAlgorithm
 		}
 
 		return new SearchResult(new ArrayList<Point>(), cost);
+	}
+
+	List<Point> fill(List<Node> path)
+	{
+		List<Point> nodes = new ArrayList<Point>();
+
+		for (int i = 1; i < path.size(); i++) {
+			Node a = path.get(i - 1);
+			Node b = path.get(i - 0);
+
+			int dx = b.getX() - a.getX();
+			int dy = b.getY() - a.getY();
+
+			if (Math.abs(dx) < 1 && Math.abs(dy) < 1) {
+				nodes.add(a);
+			} else {
+				dx = (b.getX() - a.getX()) / Math.max(Math.abs(b.getX() - a.getX()), 1);
+				dy = (b.getY() - a.getY()) / Math.max(Math.abs(b.getY() - a.getY()), 1);
+
+				Point p = a;
+
+				do {
+					nodes.add(p);
+					p = new Point(p.getX() + dx, p.getY() + dy);
+				} while (!p.equals(b));
+			}
+		}
+
+		nodes.add(path.get(path.size() - 1));
+
+		return nodes;
 	}
 
 	List<Node> backtrace(Map<Node, Node> predecessors, Node p)
@@ -126,7 +157,7 @@ public class JumpPointSearch extends BaseSearchAlgorithm
 			Point jump = jump(n.getX(), n.getY(), p.getX(), p.getY(), goal);
 
 			if (jump != null) {
-				nodes.add(new Node(jump, 0, 0)); // TODO - how to do path cost?
+				nodes.add(new Node(jump, 0, 1)); // TODO - how to do path cost?
 			}
 		}
 
