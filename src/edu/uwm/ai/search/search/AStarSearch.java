@@ -61,12 +61,12 @@ public class AStarSearch extends BaseSearchAlgorithm
 			{
 				double h1 = o1.getCost();
 				double h2 = o2.getCost();
+
 				for (Node n : backtrace(pred, o1)) {
+					h1 += n.getPathCost();
 				}
 
-				int s2 = 0;
 				for (Node n : backtrace(pred, o2)) {
-					s2 += n.getPathCost();
 					h2 += n.getPathCost();
 				}
 
