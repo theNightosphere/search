@@ -31,6 +31,12 @@ public class Node extends Point
 	private double cost;
 	private double path;
 
+	/**
+	 * 
+	 * @param p The point that gives the node its x and y coordinates
+	 * @param cost The heuristic cost of the node
+	 * @param path The number of moves away from the starting position
+	 */
 	public Node(Point p, double cost, double path)
 	{
 		this(p.getX(), p.getY(), cost, path);
@@ -54,8 +60,17 @@ public class Node extends Point
 		return cost;
 	}
 
+	/**
+	 * Returns the path cost to reach this node
+	 * @return
+	 */
 	public double getPathCost()
 	{
 		return path;
+	}
+	
+	public Point getNode()
+	{
+		return new Point(getX(), getY());
 	}
 }

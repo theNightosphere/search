@@ -58,6 +58,8 @@ public class SearchController extends JFrame
 		panel1.add(button2);
 		JButton button3 = new JButton("world 3");
 		panel1.add(button3);
+		JButton button4 = new JButton("world 4");
+		panel1.add(button4);
 
 		JPanel panel2 = new JPanel();
 		panel2.setLayout(new FlowLayout());
@@ -87,6 +89,14 @@ public class SearchController extends JFrame
 			public void actionPerformed(ActionEvent e)
 			{
 				s.setupWorld(3);
+			}
+		});
+		
+		button4.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				s.setupWorld(4);
 			}
 		});
 	}
