@@ -139,12 +139,12 @@ public class World
 
 	public int getBlockWidth()
 	{
-		return Search.displayWidth / w;
+		return ((Search) parent).getDisplayWidth() / w;
 	}
 
 	public int getBlockHeight()
 	{
-		return Search.displayHeight / h;
+		return ((Search) parent).getDisplayHeight() / h;
 	}
 
 	public void draw()

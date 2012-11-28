@@ -54,15 +54,35 @@ public class Search extends PApplet
 	@Override
 	public void setup()
 	{
-		world = new World(this, 48, 32);
+		size(displayWidth, displayHeight);
+		setupWorld(1);
+	}
+
+	public int getDisplayWidth()
+	{
+		return width;
+	}
+
+	public int getDisplayHeight()
+	{
+		return displayHeight;
+	}
+
+	public void setupWorld(int index)
+	{
+		world = new World(this, 48 * index, 32 * index);
 		player = new PlayerEntity(this, world, world.getRandomFreePoint(), color(0, 0, 0));
 
-		entities.add(new SearchEntity(this, world, world.getRandomFreePoint(), color(0, 127, 255), player, new BreadthFirstSearch(world)));
-		entities.add(new SearchEntity(this, world, world.getRandomFreePoint(), color(255, 0, 127), player, new IterativeDeepening(world)));
+		chasing = false;
+		entities = new ArrayList<SearchEntity>();
+
+		if (index == 1) {
+			entities.add(new SearchEntity(this, world, world.getRandomFreePoint(), color(0, 127, 255), player, new BreadthFirstSearch(world)));
+			entities.add(new SearchEntity(this, world, world.getRandomFreePoint(), color(255, 0, 127), player, new IterativeDeepening(world)));
+		}
+
 		entities.add(new SearchEntity(this, world, world.getRandomFreePoint(), color(127, 0, 255), player, new AStarSearch(world, new ManhattanDistance())));
 		entities.add(new SearchEntity(this, world, world.getRandomFreePoint(), color(255, 127, 0), player, new JumpPointSearch(world, new ManhattanDistance())));
-
-		size(displayWidth, displayHeight + (world.getBlockHeight() * entities.size()));
 	}
 
 	@Override
@@ -95,8 +115,9 @@ public class Search extends PApplet
 
 		int offset = 0;
 		for (SearchEntity e : entities) {
-			fill(e.getColor());
-			text(e.getResults(), 20, displayHeight + ++offset * world.getBlockHeight() - 4);
+			fill(0);
+			// fill(e.getColor());
+			text(e.getResults(), 20, displayHeight - offset++ * 12);
 		}
 	}
 

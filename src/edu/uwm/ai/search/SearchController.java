@@ -22,8 +22,13 @@
 package edu.uwm.ai.search;
 
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 /**
  * The JFrame that contains the program.
@@ -37,22 +42,61 @@ public class SearchController extends JFrame
 {
 	public SearchController()
 	{
+		final Search s = new Search();
+		s.init();
+
+		setLayout(new FlowLayout());
 		setTitle("Heuristic Search Comparison");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-		Search s = new Search();
-		s.init();
-		add(s);
+		JPanel panel1 = new JPanel();
+		panel1.setLayout(new FlowLayout());
 
+		JButton button1 = new JButton("world 1");
+		panel1.add(button1);
+		JButton button2 = new JButton("world 2");
+		panel1.add(button2);
+		JButton button3 = new JButton("world 3");
+		panel1.add(button3);
+
+		JPanel panel2 = new JPanel();
+		panel2.setLayout(new FlowLayout());
+		panel2.add(s);
+
+		getContentPane().add(panel1);
+		getContentPane().add(panel2);
+
+		button1.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				s.setupWorld(1);
+			}
+		});
+
+		button2.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				s.setupWorld(2);
+			}
+		});
+
+		button3.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				s.setupWorld(3);
+			}
+		});
 	}
 
 	public static void main(String[] args)
 	{
 		SearchController sc = new SearchController();
-		sc.pack();
-		sc.setMinimumSize(new Dimension(Search.displayWidth + 15, Search.displayHeight + 100));
 		sc.setLocationRelativeTo(null);
 		sc.setVisible(true);
 
+		sc.setMinimumSize(new Dimension(Search.displayWidth, Search.displayHeight + 125));
 	}
 }
