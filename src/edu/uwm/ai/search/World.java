@@ -53,8 +53,8 @@ public class World
 		this.w = w;
 		this.h = h;
 		this.obstacles = new boolean[w * h];
-		this.worldMap = new int[w*h];
-		
+		this.worldMap = new int[w * h];
+
 		for (int k = 0; k < 20; k++) {
 			int rw = (int) (Math.random() * 5) + 2;
 			int rh = (int) (Math.random() * 5) + 2;
@@ -64,6 +64,10 @@ public class World
 
 			for (int dw = 0; dw < rw; dw++) {
 				for (int dh = 0; dh < rh; dh++) {
+					if (j + dh + 5 > h) {
+						continue;
+					}
+
 					setObstacle(i + dw, j + dh);
 				}
 			}
@@ -172,34 +176,34 @@ public class World
 	}
 
 	/**
-	 * Updates the 2D array worldMap with the cost to reach the player entity in each slot. 
-	 * This is used by FloodFillSearch to perform search.
-	 * @param player The user's PlayerEntity
-	 * @returns The number of nodes expanded while updating the map. 
+	 * Updates the 2D array worldMap with the cost to reach the player entity in each slot. This is
+	 * used by FloodFillSearch to perform search.
+	 * 
+	 * @param player
+	 *            The user's PlayerEntity
+	 * @returns The number of nodes expanded while updating the map.
 	 */
 	public int updateWorldMap(PlayerEntity player)
 	{
 		Point playerPoint = player.getPoint();
 		LinkedList<Point> openList = new LinkedList<Point>();
 		HashSet<Point> closedList = new HashSet<Point>();
-		
+
 		openList.addLast(playerPoint);
-		//Set player's location to 0 cost.
+		// Set player's location to 0 cost.
 		worldMap[getIndex(playerPoint.getY(), playerPoint.getX())] = 0;
-		//The map updating actually resembles regular search to a degree. 
+		// The map updating actually resembles regular search to a degree.
 		int cost = 0;
-		while(!openList.isEmpty())
-		{
+		while (!openList.isEmpty()) {
 			cost++;
 			Point currentPt = openList.pollFirst();
-			int currentCost = worldMap[getIndex(currentPt.getY(),currentPt.getX())];
-			for(Point newP : getSuccessors(currentPt))
-			{
-				
-				//If the point hasn't already been assigned a value, its cost is its parent's cost plus one.
-				if(!closedList.contains(newP) && !openList.contains(newP))
-				{
-					worldMap[getIndex(newP.getY(),newP.getX())] = currentCost + 1;
+			int currentCost = worldMap[getIndex(currentPt.getY(), currentPt.getX())];
+			for (Point newP : getSuccessors(currentPt)) {
+
+				// If the point hasn't already been assigned a value, its cost is its parent's cost
+				// plus one.
+				if (!closedList.contains(newP) && !openList.contains(newP)) {
+					worldMap[getIndex(newP.getY(), newP.getX())] = currentCost + 1;
 					openList.addLast(newP);
 				}
 			}
@@ -207,11 +211,13 @@ public class World
 		}
 		return cost;
 	}
-	
+
 	/**
 	 * Takes a point and returns the valid successors in all directions.
-	 * @param p Point object to use as base for search of successors
-	 * @return A List of valid (i.e. unobstructed) successor points. 
+	 * 
+	 * @param p
+	 *            Point object to use as base for search of successors
+	 * @return A List of valid (i.e. unobstructed) successor points.
 	 */
 	private List<Point> getSuccessors(Point p)
 	{
@@ -227,13 +233,16 @@ public class World
 
 		return pruneInvalid(successors, p);
 	}
-	
+
 	/**
-	 * Takes in a list of points, determines whether or not they are valid (i.e. unobstructed), and returns a list of
-	 * valid points
-	 * @param points A List of point objects to be checked for validity
-	 * @param p The location of the point from which 'points' was generated
-	 * @return A List of valid points. 
+	 * Takes in a list of points, determines whether or not they are valid (i.e. unobstructed), and
+	 * returns a list of valid points
+	 * 
+	 * @param points
+	 *            A List of point objects to be checked for validity
+	 * @param p
+	 *            The location of the point from which 'points' was generated
+	 * @return A List of valid points.
 	 */
 	private List<Point> pruneInvalid(List<Point> points, Point p)
 	{
@@ -247,16 +256,19 @@ public class World
 
 		return newPoints;
 	}
-	
+
 	/**
 	 * Takes a Point object and returns its distance from the goal according to the worldMap
-	 * @param loc A Point whose distance from the goal is desired
-	 * @return An integer representing the number of steps from loc to the goal. 
+	 * 
+	 * @param loc
+	 *            A Point whose distance from the goal is desired
+	 * @return An integer representing the number of steps from loc to the goal.
 	 */
 	public int getCostOfSquare(Point loc)
 	{
-		return worldMap[getIndex(loc.getY(),loc.getX())];
+		return worldMap[getIndex(loc.getY(), loc.getX())];
 	}
+
 	private int getIndex(int i, int j)
 	{
 		return j * h + i;

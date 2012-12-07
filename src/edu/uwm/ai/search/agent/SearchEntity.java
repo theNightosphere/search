@@ -93,59 +93,60 @@ public class SearchEntity extends Entity
 
 	public String getResults()
 	{
-		return String.format("[%3s] %8.2fms, %8.2fms total, %8.2fms avg, %6d nodes expanded, %6d total, %6d avg", 
-					          algorithm, pTime, tTime, totalSearches == 0 ? 0 : (tTime / totalSearches), pCost,
-						      tCost, totalSearches == 0 ? 0 : (tCost / totalSearches));
+		return String.format("[%3s] %8.2fms total, %8.2fms avg, %6d nodes expanded last (%6d average), %6d total", algorithm, tTime, totalSearches == 0 ? 0 : (tTime / totalSearches), pCost, totalSearches == 0 ? 0 : (tCost / totalSearches), tCost);
 	}
 
 	public double getPTime()
 	{
 		return pTime;
 	}
-	
+
 	public double getTTime()
 	{
 		return tTime;
 	}
-	
+
 	/**
 	 * Returns the total number of times this entity's search method has been called.
-	 * @return The non-negative integer value corresponding to the number of times this entity's search method has been called.
+	 * 
+	 * @return The non-negative integer value corresponding to the number of times this entity's
+	 *         search method has been called.
 	 */
 	public int getTotalSearches()
 	{
 		return totalSearches;
 	}
-	
+
 	public int getPCost()
 	{
 		return pCost;
 	}
-	
+
 	public int getTCost()
 	{
 		return tCost;
 	}
-	
+
 	public SearchAlgorithm getAlgorithm()
 	{
 		return algorithm;
 	}
-	
+
 	/**
-	 * Determines whether the goal of the last search and the entity being tracked by the algorithm are different.
-	 * @return True if the tracked entity has moved from its position when a search path was most recently determined,
-	 * or if no previous goal exists. False if it has not moved.
+	 * Determines whether the goal of the last search and the entity being tracked by the algorithm
+	 * are different.
+	 * 
+	 * @return True if the tracked entity has moved from its position when a search path was most
+	 *         recently determined, or if no previous goal exists. False if it has not moved.
 	 */
 	public boolean hasEntityMoved()
 	{
-		if(lastGoal == null)
-		{
+		if (lastGoal == null) {
 			return true;
 		}
 		return !lastGoal.equals(e.getPoint());
 	}
-	
+
 	public void update()
 	{
 		if (getPoint().equals(e.getPoint())) {

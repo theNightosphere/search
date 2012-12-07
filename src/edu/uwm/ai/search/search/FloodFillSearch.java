@@ -18,15 +18,17 @@ public class FloodFillSearch extends BaseSearchAlgorithm
 {
 
 	private World w;
-	//private Heuristic h;
-	
+
+	// private Heuristic h;
+
 	public FloodFillSearch(World w, Heuristic h)
 	{
 		super(w);
-		
+
 		this.w = w;
-		//this.h = h;
+		// this.h = h;
 	}
+
 	@Override
 	public SearchResult search(Point initial, Point goal)
 	{
@@ -37,36 +39,30 @@ public class FloodFillSearch extends BaseSearchAlgorithm
 			{
 				double h1 = w.getCostOfSquare(o1);
 				double h2 = w.getCostOfSquare(o2);
-				//Compare nodes based on the number of moves from the goal.
-				if (h1 < h2)
-				{
+				// Compare nodes based on the number of moves from the goal.
+				if (h1 < h2) {
 					return -1;
-				}
-				else if (h1 == h2)
-				{
+				} else if (h1 == h2) {
 					return 0;
-				}
-				else
-				{
+				} else {
 					return 1;
 				}
-				
+
 			}
 		});
 		Node init = new Node(initial, w.getCostOfSquare(initial), 0);
 		successors.add(init);
 		pred.put(init, null);
-		
-		while(!successors.isEmpty())
-		{
+
+		while (!successors.isEmpty()) {
 			Node current = successors.poll();
-			//If I'm looking at the goal, return the search path
+			// If I'm looking at the goal, return the search path
 			if (current.equals(goal)) {
-				return new SearchResult(new ArrayList<Point>(backtrace(pred, current)),
-						w.getCostOfSquare(initial) - w.getCostOfSquare(current.getNode()));
+				return new SearchResult(new ArrayList<Point>(backtrace(pred, current)), w.getCostOfSquare(initial) - w.getCostOfSquare(current.getNode()));
 			}
-			
-			//Go through all successors, if they aren't in the list of predecessors, update its cost and add it.
+
+			// Go through all successors, if they aren't in the list of predecessors, update its
+			// cost and add it.
 			List<Node> succNodes = getSuccessors(current);
 			Node trueSuccessor = Collections.min(succNodes, new Comparator<Node>() {
 				@Override
@@ -74,13 +70,10 @@ public class FloodFillSearch extends BaseSearchAlgorithm
 				{
 					int c1 = w.getCostOfSquare(o1);
 					int c2 = w.getCostOfSquare(o2);
-					//Compare nodes based on the number of moves from the goal.
-					if (c1 < c2)
-					{
+					// Compare nodes based on the number of moves from the goal.
+					if (c1 < c2) {
 						return -1;
-					}
-					else if (c1 == c2)
-					{
+					} else if (c1 == c2) {
 						double h1 = o1.getCost();
 						double h2 = o2.getCost();
 						for (Node n : backtrace(pred, o1)) {
@@ -90,34 +83,27 @@ public class FloodFillSearch extends BaseSearchAlgorithm
 						for (Node n : backtrace(pred, o2)) {
 							h2 += n.getPathCost();
 						}
-						if(h1 < h2)
-						{
+						if (h1 < h2) {
 							return -1;
-						}
-						else if(h1 == h2)
-						{
+						} else if (h1 == h2) {
 							return 0;
-						}
-						else
-						{
+						} else {
 							return 1;
 						}
-					}
-					else
-					{
+					} else {
 						return 1;
 					}
-					
+
 				}
 			});
-			//Add the lowest-step-cost successor to the map of successors-to-predecessors.
+			// Add the lowest-step-cost successor to the map of successors-to-predecessors.
 			pred.put(trueSuccessor, current);
 			successors.add(trueSuccessor);
 		}
-		
+
 		return new SearchResult(new ArrayList<Point>(), 0);
 	}
-	
+
 	List<Node> backtrace(Map<Node, Node> predecessors, Node p)
 	{
 		List<Node> path = new LinkedList<Node>();
@@ -129,11 +115,11 @@ public class FloodFillSearch extends BaseSearchAlgorithm
 
 		return path;
 	}
-	
+
 	@Override
 	public String toString()
 	{
-		return "Flood Fill";
+		return "FF";
 	}
 
 }
