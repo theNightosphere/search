@@ -176,7 +176,10 @@ public class Search extends PApplet
 			case 1:
 			case 2:
 				for (SearchEntity e : entities) {
-					text(e.getResults(), 20, displayHeight - offset++ * 12);
+					fill(e.getColor());
+					text("█", 20, displayHeight - offset * 12);
+					fill(0);
+					text(" " + e.getResults(), 20, displayHeight - offset++ * 12);
 				}
 				break;
 
@@ -190,7 +193,7 @@ public class Search extends PApplet
 				}
 
 				displayString = String.format("[%3s] %8.2fms total, %8.2fms avg, %6d nodes expanded last (%6d average), %6d total", entities.get(0).getAlgorithm().toString(), totalTTime, totalSearches == 0 ? 0 : (totalTTime / totalSearches), totalPCost, totalSearches == 0 ? 0 : (totalTCost / totalSearches), totalTCost);
-				text(displayString, 20, displayHeight - offset);
+				text(" " + displayString, 20, displayHeight - offset);
 				break;
 
 			case 4:
@@ -200,8 +203,9 @@ public class Search extends PApplet
 				}
 
 				totalTTime += tMapUpdateTime;
+
 				displayString = String.format("[%3s] %8.2fms total, %8.2fms avg, %6d nodes expanded last (%6d average), %6d total", entities.get(0).getAlgorithm().toString(), totalTTime, totalSearches == 0 ? 0 : (totalTTime / totalSearches), pMapUpdateCost, totalSearches == 0 ? 0 : (tMapUpdateCost / totalSearches), tMapUpdateCost);
-				text(displayString, 20, displayHeight - offset);
+				text(" " + displayString, 20, displayHeight - offset);
 				break;
 		}
 	}
