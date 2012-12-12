@@ -78,7 +78,7 @@ abstract public class BaseSearchAlgorithm implements SearchAlgorithm
 		List<Node> newNodes = new ArrayList<Node>();
 
 		for (Node n : nodes) {
-			if (w.isValidPosition(n) && (n.getX() == p.getX() || n.getY() == p.getY() || w.isAccessableThrough(n, p))) {
+			if (w.isValidPosition(n) && w.isAccessableThrough(n, p)) {
 				newNodes.add(n);
 			}
 		}
