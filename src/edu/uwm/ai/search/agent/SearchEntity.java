@@ -83,10 +83,29 @@ public class SearchEntity extends Entity
 			while (i < path.size()) {
 				Point b = path.get(i);
 
-				parent.line(a.getX() * dimW + halfW, a.getY() * dimH + halfH, b.getX() * dimW + halfW, b.getY() * dimH + halfH);
+				dottedLine(a.getX() * dimW + halfW, a.getY() * dimH + halfH, b.getX() * dimW + halfW, b.getY() * dimH + halfH);
 
 				i++;
 				a = b;
+			}
+		}
+	}
+
+	private void dottedLine(int x1, int y1, int x2, int y2)
+	{
+		float dx = x2 - x1;
+		float dy = y2 - y1;
+
+		if (dx == 0) {
+			for (float i = Math.min(y1, y2); i < Math.max(y1, y2); i += 3) {
+				parent.point(x1, i);
+			}
+		} else {
+			float k = dy / dx;
+			float m = y1 - x1 * k;
+
+			for (float i = Math.min(x1, x2); i < Math.max(x1, x2); i += 3.0 / Math.max(1, Math.abs(k))) {
+				parent.point(i, k * i + m);
 			}
 		}
 	}
