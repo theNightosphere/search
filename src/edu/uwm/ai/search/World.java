@@ -111,8 +111,8 @@ public class World
 			throw new IllegalArgumentException("Points are not valid.");
 		}
 
-		int xDist = Math.abs(dest.getX() - origin.getX());
-		int yDist = Math.abs(dest.getY() - origin.getY());
+		int xDist = dest.getX() - origin.getX();
+		int yDist = dest.getY() - origin.getY();
 
 		if (xDist > 1 || yDist > 1) {
 			throw new IllegalArgumentException("Points are not adjacent.");
